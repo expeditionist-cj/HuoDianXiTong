@@ -1,0 +1,296 @@
+<template>
+  <div class="de_gas" ref="de_ems">
+    <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
+      <div class="div__tool-wrap">
+        <el-row :gutter="40">
+          <el-col :span="5">
+            <div class="select__wrap">
+              <div>选择时间：</div>
+              <div>
+                <el-date-picker
+                  v-model="time"
+                  align="right"
+                  type="month"
+                  placeholder="选择日期"
+                  size="small"
+                  :clearable="false"
+                  :editable="false"
+                  :picker-options="pickerOptions"
+                ></el-date-picker>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="10">
+            <SelOrg
+              @selectArear="selectArear"
+              @selectPlant="selectPlant"
+              :showDevice="false"
+              :showSystem="false"
+              :showUnit="false"
+              :showAll="false"
+            />
+          </el-col>
+          <el-col :span="7">
+            <el-button
+              @click="onAdd"
+              style="position:relative;right:-20px"
+              type="primary"
+              size="mini"
+            >新增</el-button>
+            <BtnList
+              style="width:auto;display:inline-block"
+              resetContent="导出"
+              btnStyle="textAlign:left;margin-left:32px"
+              @check="checkList"
+              @reset="onExport"
+            />
+          </el-col>
+        </el-row>
+      </div>
+      <div class="div__content-wrap">
+        <layoutTable>
+          <span slot="title" class="title">
+            <u class="u">{{ year }}</u> 年
+            <u class="u">{{ month }}</u> 月
+            <u class="u">{{area_plant}}</u> 脱硫装置耗用统计表
+          </span>
+          <div
+            class="content-table"
+            ref="zcurd"
+            slot="table"
+            v-if="tableShow"
+            v-loading="tableLoading"
+          >
+            <Zcurd
+              ref="curd"
+              :point_code="pointCode"
+              :year="year"
+              :month="month"
+              :height="tableHeight"
+              :unitList="unitList"
+              :tableData="tableData"
+            />
+          </div>
+        </layoutTable>
+      </div>
+    </Card>
+  </div>
+</template>
+
+<script>
+import layoutTable from "../../../components/tableLayout/index";
+import { get_de_ems } from "../../../api/report/de_ems";
+import moment from "moment";
+import "moment/locale/zh-cn";
+import Zcurd from "./zcrud";
+import { hasNoDataDays } from "./util";
+let area = "";
+let plant = "";
+export default {
+  props: {},
+  data() {
+    return {
+      tableLoading: false,
+      tableHeight: 400,
+      year: moment(Date.now())
+        .year()
+        .toString(),
+      month:
+        moment(Date.now()).month() + 1 > 9
+          ? (moment(Date.now()).month() + 1).toString()
+          : "0" + (moment(Date.now()).month() + 1),
+      time: Date.now(),
+      pointCode: "",
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
+      tableData: [],
+      query: {
+        year: moment(Date.now())
+          .year()
+          .toString(),
+        month:
+          moment(Date.now()).month() + 1 > 9
+            ? (moment(Date.now()).month() + 1).toString()
+            : "0" + (moment(Date.now()).month() + 1)
+      },
+      area: "",
+      plant: "",
+      area_plant: "",
+      tableShow: true,
+      unitList: ["#1", "#2"]
+    };
+  },
+  components: { layoutTable, Zcurd },
+  computed: {
+    isSucess() {
+      return this.$store.state.nx_ems.isSucess;
+    }
+  },
+  created() {},
+  mounted() {
+    this.tableShow = false;
+    this.$nextTick(() => {
+      this.tableHeight = this.$refs.de_ems.offsetHeight - 230;
+      this.tableShow = true;
+    });
+  },
+  watch: {
+    time(value) {
+      this.query.year = moment(value)
+        .year()
+        .toString();
+      this.query.month =
+        moment(value).month() + 1 > 9
+          ? (moment(value).month() + 1).toString()
+          : "0" + (moment(value).month() + 1);
+    },
+    isSucess(value) {
+      if (value == true) {
+        this.checkList();
+        this.$store.commit("SET_ISSUCESS", false);
+      }
+    }
+  },
+  methods: {
+    //查询
+    checkList() {
+      if (!this.query.pointCode) {
+        return this.$message.error("请选择电厂");
+      }
+      this.year = this.query.year;
+      this.month = this.query.month;
+      this.pointCode = this.query.pointCode;
+      this.area_plant = area + "/" + plant;
+      this.get_de_ems(this.query);
+    },
+    onExport() {
+      if(!this.query.pointCode){
+        return this.$message.error('请先选择电厂');
+      }
+      this.downloadFile("/datamonitor/desulphurizeExpendStatistics/excelDownload", {
+        ...this.query,
+        plantName: plant
+      });
+    },
+    selectArear(data) {
+      area = data.name;
+      delete this.query.pointCode;
+      this.query.area = data.deptCode;
+    },
+    selectPlant(data) {
+      if (data == "all") {
+        this.query = _.omit(this.query, "plant");
+      } else {
+        plant = data.name;
+        this.query.pointCode = this.query.area + "_" + data.deptCode;
+      }
+    },
+    get_de_ems(query) {
+      this.tableLoading = true;
+      get_de_ems(query).then(res => {
+        this.tableLoading = false;
+        let datas = res.data.data;
+        let { unitList, data } = datas;
+        this.unitList = unitList;
+        this.tableData = data;
+      });
+    },
+    // 点击新增按钮
+    onAdd() {
+      if (!this.query.pointCode) {
+        return this.$message.error("请选择电厂");
+      } else if (
+        !this.tableData.length ||
+        this.query.year + this.query.month != this.year + this.month
+      ) {
+        return this.$message.error("请先查询");
+      }
+      let curd = this.$refs.curd;
+      curd.dialogFormVisible = true;
+      let dayArray = hasNoDataDays(
+        this.tableData,
+        "date",
+        this.query.year + "-" + this.query.month
+      );
+      curd.options = dayArray.map(item => {
+        return {
+          label: this.query.year + "-" + this.query.month + "-" + item,
+          value: item
+        };
+      });
+      curd.date = dayArray[dayArray.length - 1];
+      curd.title = "新增记录";
+      this.$store.commit("SET_QUERY", this.query);
+      this.$store.commit("SET_ROW", {});
+    }
+  }
+};
+</script>
+
+<style scoped lang="scss">
+.de_gas {
+  height: 100%;
+  .div__tool-wrap {
+    padding: 20px 8px;
+    .select__wrap {
+      height: 42px;
+      line-height: 42px;
+      display: table;
+      width: 100%;
+      & > div:nth-child(1) {
+        display: table-cell;
+        width: 0.1%;
+        min-width: 90px;
+        // height: 72px;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: rgba(0, 0, 0, 0.84);
+        line-height: 12px;
+        text-align: right;
+      }
+      & > div:nth-child(2) {
+        display: table-cell;
+      }
+    }
+  }
+  .div__content-wrap {
+    padding: 0 32px;
+
+    .title {
+      font-size: 18px;
+      font-family: PingFang-SC-Heavy, PingFang-SC;
+      font-weight: 800;
+      color: rgba(51, 51, 51, 1);
+    }
+    .content-table {
+      padding-bottom: 20px;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.de_gas {
+  .el-card__body {
+    padding: 0;
+  }
+  .avue-crud__menu {
+    height: 0;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+  .el-table thead.is-group th {
+    background: #fff;
+  }
+  .el-table__fixed-footer-wrapper tbody td {
+    background-color: #fff;
+  }
+  .el-table__footer-wrapper tbody td,
+  .el-table__header-wrapper tbody td {
+    background-color: #fff;
+  }
+}
+</style>
