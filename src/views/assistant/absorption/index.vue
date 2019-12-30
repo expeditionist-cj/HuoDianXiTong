@@ -9,7 +9,7 @@ import assitant from '@/components/assitant'
 export default {
   data(){
     return {
-      modelId:3
+      modelId:4
     }
   },
   components:{

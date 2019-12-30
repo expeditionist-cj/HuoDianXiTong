@@ -6,7 +6,7 @@
       </div>
       <div slot="content" class="assitanAdvice-content clearfix">
         <Nodata
-          v-if="!Object.keys(data).length"
+          v-if="!data.fieldValue"
           class="nodata"
           data="暂无建议"
         ></Nodata>

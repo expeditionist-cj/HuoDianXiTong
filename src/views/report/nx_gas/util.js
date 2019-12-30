@@ -12,7 +12,6 @@ export const getUnit = (data)=>{
 // 判断一个月有多少天
 export const create_arry = (time)=>{
     let num = moment(time).daysInMonth();
-    console.log(num)
     let arry = [];
     for (let index = 0; index < num; index++) {
         arry.push({

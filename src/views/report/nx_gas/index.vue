@@ -3,7 +3,7 @@
     <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
       <div class="div__tool-wrap">
         <el-row :gutter="40">
-          <el-col :span="5">
+          <el-col :span="6">
             <div class="select__wrap">
               <div>选择时间：</div>
               <div>
@@ -44,7 +44,7 @@
         <layoutTable>
           <span slot="title" class="title">
             <u class="u">{{ y }}</u> 年 <u class="u">{{ m }} </u> 月
-            <u class="u">{{area_plant}}</u> 脱硫装置排放连续检测日平均值月报表</span
+            <u class="u">{{area_plant}}</u> 脱硝装置排放连续检测日平均值月报表</span
           >
           <div class="content-table" ref="zcurd" slot="table" v-if="tableShow" v-loading="tableLoading">
               <Ncurd :height="tableHeight" :list="list" :sums="sums" :unitList="unitList" :tableData="tableData" />
@@ -62,6 +62,7 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 import Ncurd from "./ncrud" ;
 import {getUnit,completeData} from "./util"
+import {excel} from "@/api/common";
 let area = "";
 let plant = "";
 export default {
@@ -124,7 +125,14 @@ export default {
         this.$message.error("请选择机组");
         return false;
       }
-      this.downloadFile('/datamonitor/emsOver/noxExp',{...this.query,plantName:plant})
+      // this.downloadFile('/datamonitor/emsOver/noxExp',{...this.query,plantName:plant})
+      excel("/datamonitor/emsOver/noxExp",
+        {...this.query,plantName:plant}
+      ).then(res=>{
+        let data = res.data;
+        let excelName = `${this.y}年 ${this.m}月 ${this.area_plant} 脱硝装置排放连续检测日平均值月报表.xls`;
+        this.excel(data,excelName);
+      })
     },
     selectArear(data) {
       area = data.name;
@@ -145,7 +153,6 @@ export default {
         this.tableLoading = false;
         let data = res.data.data;
         let {sides,dataList,sums,maxs,mins,avgs} = data;
-
         this.unitList = sides;
         let arry = completeData(dataList,`${this.query.y}-${this.query.m}`);
         maxs.day = "最大值";
@@ -192,9 +199,9 @@ export default {
   }
   .div__content-wrap {
     padding: 0 32px;
-    .u {
-      // padding: 20px
-    }
+    // .u {
+    //   // padding: 20px
+    // }
     .title {
       font-size: 18px;
       font-family: PingFang-SC-Heavy, PingFang-SC;

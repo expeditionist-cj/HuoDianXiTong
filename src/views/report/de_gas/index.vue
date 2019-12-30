@@ -61,6 +61,8 @@ import {get_de_gas} from "../../../api/report/de_gas"
 import moment from "moment";
 import "moment/locale/zh-cn";
 import Zcurd from "./zcrud" ;
+import {excel} from "@/api/common";
+import {completeData} from './util'
 let area = "";
 let plant = "";
 export default {
@@ -122,7 +124,14 @@ export default {
         this.$message.error("请选择机组");
         return false;
       }
-      this.downloadFile('/datamonitor/emsOver/so2Exp',{...this.query,plantName:plant})
+      // this.downloadFile('/datamonitor/emsOver/so2Exp',{...this.query,plantName:plant})
+      excel("/datamonitor/emsOver/so2Exp",
+        {...this.query,plantName:plant}
+      ).then(res=>{
+        let data = res.data;
+        let excelName = `${this.y}年 ${this.m}月 ${this.area_plant} 脱硫装置排放连续检测日平均值月报表.xls`;
+        this.excel(data,excelName);
+      })
     },
     selectArear(data) {
       area = data.name;
@@ -143,15 +152,15 @@ export default {
         let data = res.data.data;
         let {units,dataList,sums,maxs,mins,avgs} = data;
         this.unitList = units;
+        let arry = completeData(dataList,`${this.query.y}-${this.query.m}`);
         maxs.dy = "最大值";
         mins.dy = "最小值";
         avgs.dy = "平均值";
-        dataList.push(avgs);
-        dataList.push(maxs);
-        dataList.push(mins);
-        this.tableData = dataList;
+        arry.push(avgs);
+        arry.push(maxs);
+        arry.push(mins);
+        this.tableData = arry;
         this.sums = sums;
-        
       })
     }
   }
@@ -187,14 +196,14 @@ export default {
   }
   .div__content-wrap {
     padding: 0 32px;
-    .u {
-      // padding: 20px
-    }
+    // .u {
+    //   // padding: 20px
+    // }
     .title {
       font-size: 18px;
       font-family: PingFang-SC-Heavy, PingFang-SC;
       font-weight: 800;
-      color: rgba(51, 51, 51, 1);
+      color: rgb(80, 78, 78);
     }
     .content-table {
       padding-bottom: 20px;

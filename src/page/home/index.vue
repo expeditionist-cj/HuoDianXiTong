@@ -82,7 +82,7 @@
                   <v-chart autoresize :options="emissionBar" />
                 </li>
                 <li class="fl height100" style="width:40%">
-                  <v-chart autoresize :options="emissionRadar" />
+                  <v-chart autoresize :options="emissionRadar2" />
                 </li>
               </ul>
             </div>
@@ -131,11 +131,11 @@ const tipFun = res => {
     } = res;
     return `
       <div>${area}</div>
-      <div>总负荷：${load || "暂无数据"}${!load ? "" : "MW"}</div>
-      <div>当日发电量：${gen || "暂无数据"}${!gen ? "" : "万KWh"}</div>
-      <div>运行机组：${start || "暂无数据"}${!start ? "" : "台"}</div>
-      <div>停运机组：${end || "暂无数据"}${!end ? "" : "台"}</div>
-      <div>装机容量：${capacity || "暂无数据"}${!capacity ? "" : "MW"}</div>
+      <div>总负荷(WM)：${load || "暂无数据"}</div>
+      <div>当日发电量(万KWh)：${gen || "暂无数据"}</div>
+      <div>运行机组(台)：${start || "暂无数据"}</div>
+      <div>停运机组(台)：${end || "暂无数据"}</div>
+      <div>装机容量(MW)：${capacity || "暂无数据"}</div>
     `;
   } else {
     return null;
@@ -226,6 +226,17 @@ export default {
       // 各区域当月减排量对比 雷达图配置
       emissionRadar: radarConfig({
         text: "各区域当月减排量对比",
+        indicator: [
+          { text: "东北" },
+          { text: "内蒙" },
+          { text: "河南" },
+          { text: "江西" },
+          { text: "西北" }
+        ],
+        data: []
+      }),
+      emissionRadar2: radarConfig({
+        text: "各区域当月消耗对比",
         indicator: [
           { text: "东北" },
           { text: "内蒙" },
@@ -364,6 +375,11 @@ export default {
           indicator: formatterRadarData(orgcodeData).indicator,
           data: formatterRadarData(orgcodeData).data
         });
+        this.emissionRadar2 = radarConfig({
+          text: "各区域当月消耗对比",
+          indicator: formatterRadarData(orgcodeData).indicator,
+          data: formatterRadarData(orgcodeData).data
+        });
       });
     }
   }
@@ -381,12 +397,12 @@ export default {
     height: calc(calc(100% - 16px) * 0.68);
     margin-bottom: 16px;
     & > li:nth-child(1) {
-      width: calc(calc(100% - 16px) * 0.76);
+      width: calc(calc(100% - 16px) * 0.69);
       height: 100%;
       margin-right: 16px;
     }
     & > li:nth-child(2) {
-      width: calc(calc(100% - 16px) * 0.24);
+      width: calc(calc(100% - 16px) * 0.31);
       height: 100%;
       & > div {
         height: calc(calc(100% - 16px) / 2);
@@ -396,7 +412,7 @@ export default {
       }
     }
     .wel__up-content {
-      padding-right: 51px;
+      padding-right: 0px;
       & > li:nth-child(1) {
         width: calc(100% - 262px);
         height: 100%;
@@ -404,7 +420,7 @@ export default {
       & > li:nth-child(2) {
         width: 262px;
         height: 100%;
-        padding: 30px 0 46px 77px;
+        padding: 30px 0 46px 47px;
       }
     }
   }

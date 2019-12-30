@@ -1,5 +1,5 @@
-const url = 'http://192.168.59.7:9999';
-//const url = "http://183.64.62.154:9999";
+// const url = 'http://192.168.59.7:9999';
+const url = "http://183.64.62.154:9999";
 const urlXR = "http://192.168.1.142:9999";
 const env = process.env;
 const path = require('path')
@@ -93,6 +93,7 @@ module.exports = {
           '^/alraminfo': '/datamonitor'
         }
       },
+      // 智能助手
       '/smartassist': {
           target: url,
           ws: true,

@@ -14,11 +14,11 @@ export const areaMap = {
 }
 // 首页基础数据 映射
 export const baseMap = {
-    "load": "总负荷",
-    "currentGeneration": "当日发电量",
-    "startNum": "运行机组",
-    "stopNum": "停运机组",
-    "capacity": "装机容量",
+    "load": "总负荷 (WM)",
+    "currentGeneration": "当日发电量 (万KWh)",
+    "startNum": "运行机组 (台)",
+    "stopNum": "停运机组 (台)",
+    "capacity": "装机容量 (WM)",
 }
 // 首页地图映射表
 export const map_map =
@@ -35,6 +35,7 @@ export const map_map =
 }
 // 脱硫脱硝装置发电量统计表
 export const power_GNT = {
+    n_run_rate: "脱硝合格投运率(%)",
     gen_power: "发电量(万KWh)",
     net_power: "上网电量(万KWh)",
     run_time: "主机运行小时数(h)",
@@ -43,21 +44,20 @@ export const power_GNT = {
     s_run_time: "脱硫运行小时数(h)",
     n_run_time: "脱硝运行小时数(h)",
     s_run_rate: "脱硫合格投运率(%)",
-    n_run_rate: "脱硝合格投运率(%)",
+    
     // day: "日期"
-
 }
 // 脱硫耗用统计表
 export const DE_EMS_LS = {
     '采购量': {
         prop: "limestone_powder_procure",
-        label: "采购量",
-        width: math_clm_width("采购量111")
+        label: "采购量", 
+        width: math_clm_width("采购量111 ")
     },
     '库存量': {
         prop: "limestone_powder_stock",
         label: '库存量',
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '纯度': {
         prop: "limestone_powder_purity",
@@ -67,29 +67,29 @@ export const DE_EMS_LS = {
     '耗量': {
         prop: "_limestone_powder_consum",
         label: "耗量",
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '合计': {
         prop: "sum_limestone_powder_consum",
         label: '合计',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '耗用率': {
-        prop: "sum_carbide_slag_consum_rate",
+        prop: "sum_limestone_powder_consum_rate",
         label: '耗用率',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const DE_EMS_CB = {
     '采购量': {
         prop: "carbide_slag_procure",
         label: "采购量",
-        width: math_clm_width("采购量111")
+        width: math_clm_width("采购量111 ")
     },
     '库存量': {
         prop: "carbide_slag_stock",
         label: '库存量',
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '纯度': {
         prop: "carbide_slag_purity",
@@ -99,29 +99,29 @@ export const DE_EMS_CB = {
     '耗量': {
         prop: "_carbide_slag_consum",
         label: "耗量",
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '合计': {
         prop: "sum_carbide_slag_consum",
         label: '合计',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '耗用率': {
         prop: "sum_carbide_slag_consum_rate",
         label: '耗用率',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const DE_EMS_SUM = {
     '总耗量': {
         prop: "sumhl",
         label: '总耗量',
-        width: math_clm_width("吨/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '总耗用率': {
         prop: "sumhl_rate",
         label: '总耗用率',
-        width: math_clm_width("吨/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
 }
 export const DE_EMS_DH = {
@@ -132,8 +132,8 @@ export const DE_EMS_DH = {
     },
     '电耗合计': {
         prop: "sum_power",
-        label: '合计',
-        width: math_clm_width("合计 ")
+        label: '万KWh',
+        width: math_clm_width("万KWh ")
     },
     '厂用电率': {
         prop: "sum_power_rate",
@@ -147,8 +147,8 @@ export const DE_EMS_DH = {
     },
     '分摊合计': {
         prop: "sum_share",
-        label: '合计',
-        width: math_clm_width("合计 ")
+        label: '万KWh',
+        width: math_clm_width("万KWh ")
     },
     '分摊厂用电率': {
         prop: "sum_share_rate",
@@ -170,17 +170,17 @@ export const DE_EMS_YS = {
     '工业水': {
         prop: "industrial_water",
         label: '工业水',
-        width: math_clm_width("工业水(中水、冷却水)")
+        width: math_clm_width("工业水(中水、冷却水) ")
     },
     '工艺水': {
         prop: "process_water",
         label: '工艺水',
-        width: math_clm_width("工业水(中水、冷却水)")
+        width: math_clm_width("工业水(中水、冷却水) ")
     },
     '合计': {
         prop: "sum_water",
         label: '合计',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '耗水率': {
         prop: "sum_water_rate",
@@ -223,19 +223,19 @@ export const NX_EMS_YA = {
         prop: "ya_cg",
         label:'采购量',
         unit:'吨',
-        width: math_clm_width("采购量111")
+        width: math_clm_width("采购量111 ")
     },
     '耗量': {
         prop: "_ya_hl",
         label:'耗量',
         unit:'吨',
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '库存量': {
         prop: "ya_kc",
         label: "库存量",
-        unit:'吨',
-        width: math_clm_width("库存量111")
+        unit:'吨', 
+        width: math_clm_width("库存量111 ")
     },
     '纯度>99.6%': {
         prop: "ya_cd",
@@ -247,13 +247,13 @@ export const NX_EMS_YA = {
         prop: "ya_hj",
         label: "合计",
         label: '吨',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '耗用率': {
         prop: "ya_rate",
         label: "耗用率",
-        label: 't/万KWh',
-        width: math_clm_width("t/万KWh")
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const NX_EMS_NS = {
@@ -261,19 +261,19 @@ export const NX_EMS_NS = {
         prop: "ns_cg",
         label:'采购量',
         label: "吨",
-        width: math_clm_width("采购量111")
+        width: math_clm_width("采购量111 ")
     },
     '耗量': {
         prop: "_ns_hl",
         label:'耗量',
         label: "吨",
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '库存量': {
         prop: "ns_kc",
         label: "库存量",
         label: '吨',
-        width: math_clm_width("库存量111")
+        width: math_clm_width("库存量111 ")
     },
     '总氮': {
         prop: "ns_zd",
@@ -285,13 +285,13 @@ export const NX_EMS_NS = {
         prop: "ns_hj",
         label: "合计",
         label: '吨',
-        width: math_clm_width("t/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '耗用率': {
         prop: "ns_rate",
         label: "耗用率",
-        label: 't/万KWh',
-        width: math_clm_width("t/万KWh")
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const NX_EMS_HYJ = {
@@ -299,13 +299,13 @@ export const NX_EMS_HYJ = {
         prop: "hyj_hj",
         label: "总耗量",
         label: '吨',
-        width: math_clm_width("吨/万KWh")
+        width: math_clm_width("吨/万KWh ")
     },
     '总耗用率': {
-        prop: "ya_rate",
+        prop: "hyj_rate",
         label: "总耗用率",
-        label: 't/万KWh',
-        width: math_clm_width("吨/万KWh")
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const NX_EMS_DH = {
@@ -318,8 +318,8 @@ export const NX_EMS_DH = {
     '合计': {
         prop: "dh_hj",
         label: "合计",
-        label: 'KWh',
-        width: math_clm_width("#1电耗 ")
+        label: '万KWh',
+        width: math_clm_width("万KWh ")
     },
     '厂用电率': {
         prop: "dh_rate",
@@ -349,7 +349,7 @@ export const NX_EMS_DH = {
         prop: "ft_hj",
         label: "合计",
         label: '万KWh',
-        width: math_clm_width("#2分摊 ")
+        width: math_clm_width("万KWh ")
     },
     '分摊厂用电率': {
         prop: "ft_rate",
@@ -380,7 +380,7 @@ export const NX_EMS_YS = {
     '工业耗水率': {
         prop: "gys_rate",
         label: "工业耗水率",
-        label: 't/万KWh',
+        label: '吨/万KWh',
         width: math_clm_width("工业耗水率 ")
     },
     '除盐水': {
@@ -392,7 +392,7 @@ export const NX_EMS_YS = {
     '除盐耗水率': {
         prop: "cys_rate",
         label: "除盐耗水率",
-        label: 't/万KWh',
+        label: '吨/万KWh',
         width: math_clm_width("除盐耗水率 ")
     }
 }
@@ -400,28 +400,28 @@ export const NX_EMS_HQL = {
     '耗汽量': {
         prop: "hql",
         label: "耗汽量",
-        label: 't/万KWh',
-        width: math_clm_width("t/万KWh ")
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
     },
     '耗汽率': {
         prop: "hql_rate",
         label: "耗汽率",
         label: '吨',
-        width: math_clm_width("t/万KWh ")
+        width: math_clm_width("吨/万KWh ")
     }
 }
 export const NX_EMS_GAS = {
     '耗气量': {
         prop: "gas",
         label: "耗气量",
-        label: 't/万KWh',
-        width: math_clm_width("t/万KWh ")
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
     },
     '耗气率': {
         prop: "gas_rate",
         label: "耗气率",
         label: '吨',
-        width: math_clm_width("t/万KWh ")
+        width: math_clm_width("吨/万KWh ")
     }
 }
 
@@ -445,7 +445,7 @@ export const DE_GAS_ORIGIN = {
     '标态流量': {
         prop: "in_smk_mnt",
         label: "X104",
-        width: math_clm_width("10^4m³/d")
+        width: math_clm_width("10⁴m³/d")
     },
     '氧量': {
         prop: "in_o2_rv",
@@ -478,7 +478,7 @@ export const DE_GAS_OVER = {
     '标态流量': {
         prop: "out_smk_mnt",
         label: "X104",
-        width: math_clm_width("10^4m³/d")
+        width: math_clm_width("10⁴m³/d")
     },
     '氧量': {
         prop: "out_o2_rv",
@@ -516,7 +516,7 @@ export const NX_GAS_ORIGIN = {
     '标态流量': {
         prop: "inSmkMnt",
         label: "X104",
-        width: math_clm_width("10^4m³/d")
+        width: math_clm_width("10⁴m³/d")
     },
     '氧量': {
         prop: "inO2Rv",
@@ -550,7 +550,7 @@ export const NX_GAS_OVER = {
     '标态流量': {
         prop: "outSmkMnt",
         label: "X104",
-        width: math_clm_width("10^4m³/d")
+        width: math_clm_width("10⁴m³/d")
     },
     '氧量': {
         prop: "outO2Rv",

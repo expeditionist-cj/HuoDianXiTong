@@ -54,12 +54,23 @@
         </el-row>
       </div>
       <avue-crud
+      v-if="way =='E'"
         ref="crud"
         :page="page"
         :data="tableData"
         :permission="permissionList"
         :table-loading="tableLoading"
         :option="tableOption"
+        @on-load="getList"
+      ></avue-crud>
+      <avue-crud
+        v-else
+        ref="crud"
+        :page="page"
+        :data="tableData"
+        :permission="permissionList"
+        :table-loading="tableLoading"
+        :option="tableOption_fdl"
         @on-load="getList"
       ></avue-crud>
     </basic-container>
@@ -76,7 +87,7 @@ import {
   putObj,
   delObj
 } from "@/api/datamon/hdenergy";
-import { tableOption } from "@/const/crud/datamon/hdenergy";
+import { tableOption,tableOption_fdl } from "@/const/crud/datamon/hdenergy";
 import { mapGetters } from "vuex";
 
 export default {
@@ -91,6 +102,7 @@ export default {
       },
       tableLoading: false,
       tableOption: tableOption,
+      tableOption_fdl:tableOption_fdl,
       wayOptions: [
         {
           label: "按减排统计",

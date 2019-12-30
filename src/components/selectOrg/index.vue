@@ -130,10 +130,10 @@ export default {
       unit: [], // 机组
       // 装置
       device: [
-        {
-          value: "all",
-          label: "全部"
-        },
+        // {
+        //   value: "all",
+        //   label: "全部"
+        // },
         {
           value: "tlsys_code",
           label: "脱硫"
@@ -166,9 +166,9 @@ export default {
   mounted() {
     this.mathWidth();
     // 显示设备全部
-    if(!this.showDeviceAll){
-      this.device.shift();
-    }
+    // if(!this.showDeviceAll){
+    //   this.device.shift();
+    // }
     // 0 无权限 1 有权限
     getAreaAndPlant(1, 1).then(response => {
       let {
@@ -181,12 +181,12 @@ export default {
           label: item.name
         };
       });
-      if (this.showAll) {
-        arry.unshift({
-          label: "全部",
-          value: "all"
-        });
-      }
+      // if (this.showAll) {
+      //   arry.unshift({
+      //     label: "全部",
+      //     value: "all"
+      //   });
+      // }
       this.area = arry;
     });
   },

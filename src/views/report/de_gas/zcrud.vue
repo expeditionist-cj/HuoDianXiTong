@@ -24,7 +24,7 @@
         :label="'#'+item + 'FGD原烟气'"
         align="center"
       >
-        <el-table-column align="center" label="SO2">
+        <el-table-column align="center" label="SO₂">
           <el-table-column
             align="center"
             label="mg/Nm³"
@@ -34,7 +34,7 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="折算mg/m³"
+            label="折算mg/Nm³"
             :prop="item + '_' + DE_GAS_ORIGIN['折算mg/Nm³']['prop']"
             :minWidth="DE_GAS_ORIGIN['折算mg/Nm³']['width']"
           >
@@ -51,7 +51,7 @@
         <el-table-column align="center" label="标态流量">
           <el-table-column
             align="center"
-            label="10^4m³/d"
+            label="10⁴m³/d"
             :prop="item + '_' + DE_GAS_ORIGIN['标态流量']['prop']"
             :minWidth="DE_GAS_ORIGIN['标态流量']['width']"
           ></el-table-column>
@@ -81,7 +81,7 @@
         :label="'#'+item + 'FGD净烟气'"
         align="center"
       >
-        <el-table-column align="center" label="SO2">
+        <el-table-column align="center" label="SO₂">
           <el-table-column
             align="center"
             label="mg/Nm³"
@@ -91,7 +91,7 @@
           </el-table-column>
           <el-table-column
             align="center"
-            label="折算mg/m³"
+            label="折算mg/Nm³"
             :prop="item + '_' + DE_GAS_OVER['折算mg/Nm³']['prop']"
             :minWidth="DE_GAS_OVER['折算mg/Nm³']['width']"
           >
@@ -108,7 +108,7 @@
         <el-table-column align="center" label="标态流量">
           <el-table-column
             align="center"
-            label="10^4m³/d"
+            label="10⁴m³/d"
             :prop="item + '_' + DE_GAS_OVER['标态流量']['prop']"
             :minWidth="DE_GAS_OVER['标态流量']['width']"
           ></el-table-column>
@@ -132,9 +132,14 @@
         <el-table-column
           align="center"
           label="脱硫效率"
+        >
+        <el-table-column
+            align="center"
+            label="%"
           :prop="item + '_' + DE_GAS_OVER['脱硫效率']['prop']"
           :minWidth="DE_GAS_OVER['脱硫效率']['width']"
-        ></el-table-column>
+          ></el-table-column>
+        </el-table-column>
       </el-table-column>
     </el-table>
   </div>

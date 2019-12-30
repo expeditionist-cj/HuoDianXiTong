@@ -3,7 +3,7 @@
     <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
       <div class="div__tool-wrap">
         <el-row :gutter="40">
-          <el-col :span="5">
+          <el-col :span="6">
             <div class="select__wrap">
               <div>选择时间：</div>
               <div>
@@ -29,7 +29,7 @@
               :showSystem="false"
             />
           </el-col>
-          <el-col :span="5">
+          <el-col :span="4">
             <BtnList
               resetContent="导出"
               btnStyle="textAlign:left;margin-left:32px"
@@ -41,25 +41,23 @@
       </div>
       <div class="div__content-wrap">
         <layoutTable>
-          <span slot="title">
-              {{this.query.y}} 年 {{this.query.m}} 月装置超限、超排统计表
-          </span>
+          <span slot="title">{{this.query.y}} 年 {{this.query.m}} 月装置超限、超排统计表</span>
           <div slot="table" v-if="tableShow" v-loading="loading">
-             <el-table border :data="tableData" style="width: 100%" :height="tableHeight">
-            <el-table-column align="center" prop="plantName" label="项目" width="60"></el-table-column>
-            <el-table-column align="center" prop="unit" label="机组" width="100">
-              <template slot-scope="scope">
-                <span>{{"#"+scope.row.unit.charAt(0)}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="areaName" label="区域" width="120"></el-table-column>
-            <el-table-column align="center" prop="type" label="类型" width="80"></el-table-column>
-            <el-table-column align="center" prop="idx" label="超限/超排指标" min-width="120"></el-table-column>
-            <el-table-column align="center" prop="val" label="超限/超排值(mg/Nm3)" min-width="140"></el-table-column>
-            <el-table-column align="center" prop="startTime" label="开始时间" min-width="160"></el-table-column>
-            <el-table-column align="center" prop="endTime" label="结束时间" min-width="160"></el-table-column>
-            <el-table-column align="center" prop="overHour" label="超限时间(h)"></el-table-column>
-          </el-table>
+            <el-table border :data="tableData" style="width: 100%" :height="tableHeight">
+              <el-table-column align="center" prop="areaName" label="区域" width="80" fixed></el-table-column>
+              <el-table-column align="center" prop="plantName" label="项目" width="50"></el-table-column>
+              <el-table-column align="center" prop="unit" label="机组" width="50">
+                <template slot-scope="scope">
+                  <span>{{"#"+scope.row.unit.charAt(0)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" prop="type" label="类型" width="50"></el-table-column>
+              <el-table-column align="center" prop="idx" label="超限/超排指标" min-width="80"></el-table-column>
+              <el-table-column align="center" prop="val" label="超限/超排值(mg/Nm3)" min-width="110"></el-table-column>
+              <el-table-column align="center" prop="startTime" label="开始时间" min-width="105"></el-table-column>
+              <el-table-column align="center" prop="endTime" label="结束时间" min-width="105"></el-table-column>
+              <el-table-column align="center" prop="overHour" label="超限/超排时间(h)" min-width="80"></el-table-column>
+            </el-table>
           </div>
         </layoutTable>
       </div>
@@ -72,14 +70,15 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 import { get_emsOver } from "../../../api/report/superEmis";
 import _ from "lodash";
-import layoutTable from "../../../components/tableLayout/index"
+import layoutTable from "../../../components/tableLayout/index";
+import {excel} from "@/api/common";
 moment.locale("zh-cn");
 export default {
   props: {},
   data() {
     return {
-      loading:false,
-      tableShow:true,
+      loading: false,
+      tableShow: true,
       tableHeight: 600,
       time: Date.now(),
       pickerOptions: {
@@ -102,11 +101,10 @@ export default {
   mounted() {
     this.tableShow = false;
     this.tableHeight = this.$refs.superEmis.offsetHeight - 210;
-    this.$nextTick(()=>{
-      this.tableShow = true
+    this.$nextTick(() => {
+      this.tableShow = true;
       this.get_emsOver(this.query);
-    })
-    
+    });
   },
   watch: {
     time(value) {
@@ -119,7 +117,14 @@ export default {
       this.get_emsOver(this.query);
     },
     onExport() {
-      this.downloadFile('/datamonitor/emsOver/exportStat',this.query);
+      // this.downloadFile("/datamonitor/emsOver/exportStat", this.query);
+       excel("/datamonitor/emsOver/exportStat",
+        this.query
+      ).then(res=>{
+        let data = res.data;
+        let excelName = `${this.query.y}年${this.query.m}月 装置超限、超排统计表.xls`;
+        this.excel(data,excelName);
+      })
     },
     selectArear(data) {
       delete this.query.plant;
@@ -149,7 +154,16 @@ export default {
       this.loading = true;
       get_emsOver(query).then(res => {
         this.loading = false;
-        this.tableData = res.data.data;
+        let midData = res.data.data;
+        let datas = [];
+        midData.forEach((item, index) => {
+          item = {
+            ...item,
+            idx: item.idx == "so2" ? "SO₂" : item.idx == "nox" ? "NOx" : item.idx
+          };
+          datas.push(item);
+        });
+        this.tableData = datas;
       });
     }
   }

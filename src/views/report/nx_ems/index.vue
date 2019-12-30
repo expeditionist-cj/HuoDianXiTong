@@ -3,7 +3,7 @@
     <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
       <div class="div__tool-wrap">
         <el-row :gutter="40">
-          <el-col :span="5">
+          <el-col :span="6">
             <div class="select__wrap">
               <div>选择时间：</div>
               <div>
@@ -84,6 +84,7 @@ import moment from "moment";
 import "moment/locale/zh-cn";
 import Zcurd from "./zcrud";
 import { hasNoDataDays } from "./util";
+import {excel} from "@/api/common";
 let area = "";
 let plant = "";
 export default {
@@ -151,13 +152,20 @@ export default {
       this.get_nx_ems(this.query);
     },
     onExport() {
-      if(!this.query.projectCode){
-        return this.$message.error('请先选择电厂');
+      if (!this.query.projectCode) {
+        return this.$message.error("请先选择电厂");
       }
-      this.downloadFile("/datamonitor/hd_txconsume/export", {
-        ...this.query,
-        plantName: plant
-      });
+      // this.downloadFile("/datamonitor/hd_txconsume/export", {
+      //   ...this.query,
+      //   plantName: plant
+      // });
+      excel("/datamonitor/hd_txconsume/export",
+        {...this.query,plantName:plant}
+      ).then(res=>{
+        let data = res.data;
+        let excelName = `${this.year}年 ${this.month}月 ${this.area_plant} 脱硝装置耗用统计表.xls`;
+        this.excel(data,excelName);
+      })
     },
     selectArear(data) {
       area = data.name;
@@ -174,7 +182,6 @@ export default {
     get_nx_ems(query) {
       this.tableLoading = true;
       get_nx_ems(query).then(res => {
-        console.log(res);
         this.tableLoading = false;
         let datas = res.data.data;
         let { units, data } = datas;
@@ -208,7 +215,11 @@ export default {
       curd.date = dayArray[dayArray.length - 1];
       curd.title = "新增记录";
       this.$store.commit("SET_QUERY", this.query);
-      this.$store.commit("SET_ROW", {});
+      let datas =JSON.parse(JSON.stringify(this.tableData[0]));
+      for (var key in datas) {
+        datas[key] = null;
+      }
+      this.$store.commit("SET_ROW", datas);
     }
   }
 };

@@ -2,7 +2,7 @@
   <div>
     <div class="inputs">
       <span>{{ label }}({{ unit }}):</span>
-      <el-input size="small" :disabled="disabled" class="__input" v-model="row[att]" @input="onIpt"></el-input>
+      <el-input size="small" type="number" :disabled="disabled" class="__input" v-model="row[att]" @input="onIpt" oninput="value=value.replace(/[^\d.]/g,'');"></el-input>
     </div>
   </div>
 </template>
@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     onIpt(val) {
+      
       this.row[this.att] = val;
       if (/ya_hl/.test(this.att)) {
         this.row["ya_hj"] = this.add_att(this.list, "ya_hl");

@@ -55,7 +55,7 @@
         <el-table-column align="center" label="耗用率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="DE_EMS_LS['耗用率']['prop']"
             :minWidth="DE_EMS_LS['耗用率']['width']"
           ></el-table-column>
@@ -114,7 +114,7 @@
         <el-table-column align="center" label="耗用率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="DE_EMS_CB['耗用率']['prop']"
             :minWidth="DE_EMS_CB['耗用率']['width']"
           ></el-table-column>
@@ -323,8 +323,11 @@
       <!-- 操作栏 -->
       <el-table-column fixed="right" align="center" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-          <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+          <div v-if="scope.row.date=='合计'||scope.row.date=='调整'"></div>
+          <div v-else>
+            <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
+            <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -738,6 +741,12 @@ export default {
         data.year = this.year;
         data.month = this.month;
         data.day = this.date;
+        delete data.date;
+        for(var key in data){
+          if(data[key]==''){
+            data[key]=null;
+          }
+        }
         update_de_ems({ data: JSON.stringify(data) }).then(res => {
           let msg = res.data.msg;
           if (msg == "success") {
@@ -763,6 +772,7 @@ export default {
       try {
         let query = this.$store.state.nx_ems.query;
         let data = this.$store.state.nx_ems.row;
+        data = JSON.parse(JSON.stringify(data));
         data.point_code = query.pointCode;
         data.year = query.year;
         data.month = query.month;
@@ -789,6 +799,7 @@ export default {
       }
     },
     handleClick(row) {
+      console.log(row)
       let days = hasDays(this.tableData, "date");
       let day = row.date;
       if (days.indexOf(day) < 0) {

@@ -3,7 +3,7 @@
     <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
       <div class="div__tool-wrap">
         <el-row :gutter="40">
-          <el-col :span="5">
+          <el-col :span="6">
             <div class="select__wrap">
               <div>选择时间：</div>
               <div>
@@ -70,6 +70,7 @@ import { tableOption } from "../../../const/crud/report/ele_gen_en";
 import { rd_clm } from "./util";
 import { get_device_power } from "../../../api/report/ele_gen_en";
 import layoutTable from "../../../components/tableLayout/index";
+import {excel} from "@/api/common";
 moment.locale("zh-cn");
 let area = "";
 let plant = "";
@@ -129,7 +130,22 @@ export default {
       this.get_device_power(this.query);
     },
     onExport() {
-      console.log("dc");
+      if(!this.query.projectCode){
+        return this.$message.error('请先选择电厂');
+      }
+      // http://192.168.59.7:9999/datamonitor/device_power/export?projectCode=ELXM&year=2019&month=12
+      // this.downloadFile("/datamonitor/device_power/export", {
+      //   ...this.query,
+      //   plantName: plant
+      // });
+      excel("/datamonitor/device_power/export",{
+        ...this.query,
+        plantName: plant
+      }).then(res=>{
+        let data = res.data;
+        let excelName = `${this.y}年${this.m}月 ${this.area}/${this.plant} 脱硫脱硝装置发电量统计表.xls`;
+        this.excel(data,excelName);
+      })
     },
     selectArear(data) {
       area = data.name;

@@ -27,18 +27,19 @@ export const tableOption = {
       label: '入口浓度均值(mg/Nm3)',
       prop: 'INLET_FLOW',
       sortable:true,
-      minWidth:160,
+      minWidth:180,
     },
 	  {
       label: '出口浓度均值 (mg/Nm3)',
       prop: 'OUTLET_FLOW',
       sortable:true,
-      minWidth:160,
+      minWidth:180,
     },
 	  {
       label: '减排量 (t)',
       prop: 'EMISSION_FLOW',
       sortable:true,
+      minWidth:100,
     },
 	  {
       label: '统计方式',

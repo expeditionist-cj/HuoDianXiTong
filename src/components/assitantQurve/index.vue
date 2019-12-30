@@ -5,13 +5,11 @@
         <slot name="header"></slot>
       </div>
       <div slot="content" class="assitantQurve-content">
-        <Nodata
-          v-if="!Object.keys(data).length"
-          class="nodata"
-          data="暂无曲线"
-        ></Nodata>
+        <Nodata v-if="!Object.keys(data).length" class="nodata" data="暂无曲线"></Nodata>
         <div class="parame">
-          <span>{{ data.fieldValue }}</span>
+          <div style="width:100%;height:400px;">
+            <v-chart autoresize :options="options" />
+          </div>
         </div>
       </div>
     </Mycard>
@@ -19,8 +17,16 @@
 </template>
 
 <script>
+// import getCurveData from '@/api/assitant/common'
 export default {
-  props: {},
+  props: {
+    options:{
+      type:Object,
+      default : ()=>{
+        return {}
+      }
+    }
+  },
   data() {
     return {
       data: {
@@ -38,7 +44,9 @@ export default {
   created() {},
   mounted() {},
   watch: {},
-  methods: {}
+  methods: {
+    // getCurveData()
+  }
 };
 </script>
 
@@ -47,5 +55,13 @@ export default {
   .assitantQurve-content {
     min-height: 360px;
   }
+  .parame {
+    display: flex;
+    justify-content: center;
+  }
+}
+.echarts {
+  width: 100%;
+  height: 100%;
 }
 </style>

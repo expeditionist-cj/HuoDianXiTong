@@ -13,11 +13,10 @@
               :showAll="false"
               :showDeviceAll="false"
             />
-            
           </el-col>
         </el-row>
         <el-row :gutter="10">
-          <el-col :span="8">
+          <el-col :span="11">
             <div class="select__wrap">
               <div>选择日期段：</div>
               <div>
@@ -35,12 +34,12 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="13">
             <BtnList
               resetContent="查询近一月"
               checkContent="查询近一周"
               btnStyle="textAlign:left;margin-left:32px;display:inline-block;width:auto"
-              @check="onWeek"
+              @check= "onWeek"
               @reset="onMonth"
               resetType="primary"
             />
@@ -50,13 +49,14 @@
               @check="checkList"
               @reset="onExport"
             />
-            
           </el-col>
         </el-row>
       </div>
       <div class="div__content-wrap">
         <layOutTable>
-          <span slot="title">{{this.title.area}}{{this.title.plant}}{{this.title.unit}} {{this.title.type}} 装置启停统计表</span>
+          <span
+            slot="title"
+          >{{this.title.area}}{{this.title.plant}}{{this.title.unit}} {{this.title.type}} 装置启停统计表</span>
           <div slot="table">
             <el-table
               v-if="tableShow"
@@ -67,56 +67,21 @@
               :height="tableHeight"
               :cell-class-name="addCellClass"
             >
-              <el-table-column type="index" align="center" width="50">
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="project"
-                label="项目"
-                width="120"
-              ></el-table-column>
-              <el-table-column
-                align="center"
-                prop="device"
-                label="装置"
-                width="120"
-              ></el-table-column>
-              <el-table-column
-                align="center"
-                prop="crew"
-                label="机组"
-                min-width="120"
-              ></el-table-column>
-              <el-table-column
-                align="center"
-                prop="region"
-                label="区域"
-                min-width="120"
-              ></el-table-column>
-              <el-table-column
-                align="center"
-                prop="stopTime"
-                label="解列时刻"
-                min-width="160"
-              ></el-table-column>
-              <el-table-column
-                align="center"
-                prop="startTime"
-                label="并网时刻"
-                min-width="160"
-              >
+              <el-table-column type="index" align="center" label="序号" width="80"></el-table-column>
+              <el-table-column align="center" prop="region" label="区域" min-width="120"></el-table-column>
+              <el-table-column align="center" prop="project" label="项目" width="120"></el-table-column>
+              <el-table-column align="center" prop="crew" label="机组" min-width="120"></el-table-column>
+              <el-table-column align="center" prop="device" label="装置" width="120"></el-table-column>
+              <el-table-column align="center" prop="stopTime" label="解列时刻" min-width="160" sortable></el-table-column>
+              <el-table-column align="center" prop="startTime" label="并网时刻" min-width="160" sortable>
                 <!-- <template slot-scope="scope">
                   <span style="color:red">{{scope.row.startTime}}</span>
-                </template> -->
+                </template>-->
               </el-table-column>
-              <el-table-column
-                align="center"
-                prop="outageDuration"
-                label="停运时长"
-              >
+              <el-table-column align="center" prop="outageDuration" label="停运时长(h)" min-width="160" sortable>
                 <!-- <template slot-scope="scope">
                   
-                </template> -->
+                </template>-->
               </el-table-column>
             </el-table>
           </div>
@@ -129,9 +94,10 @@
 <script>
 import moment from "moment";
 import "moment/locale/zh-cn";
-import { get_st_sp_rp ,get_excel} from "../../../api/report/start_stop_rp";
+import { get_st_sp_rp, get_excel } from "../../../api/report/start_stop_rp";
 import _ from "lodash";
 import layOutTable from "../../../components/tableLayout/index";
+import {excel} from "@/api/common";
 moment.locale("zh-cn");
 export default {
   props: {},
@@ -158,13 +124,13 @@ export default {
           .format("YYYY-MM-DD"),
         endTime: moment().format("YYYY-MM-DD")
       },
-      title:{
-        area:"",
-        plant:"",
-        unit:"",
-        type:"",
+      title: {
+        area: "",
+        plant: "",
+        unit: "",
+        type: ""
       },
-      catch:{}
+      catch: {}
     };
   },
   components: {
@@ -190,7 +156,7 @@ export default {
       delete this.query.plant;
       delete this.query.unit;
       delete this.query.type;
-      this.catch.area = data.name+"/";
+      this.catch.area = data.name + "/";
       if (data == "all") {
         this.query = _.omit(this.query, "area");
       } else {
@@ -201,7 +167,7 @@ export default {
     selectPlant(data) {
       delete this.query.unit;
       delete this.query.type;
-      this.catch.plant = data.name+"/";
+      this.catch.plant = data.name + "/";
       if (data == "all") {
         this.query = _.omit(this.query, "plant");
       } else {
@@ -210,7 +176,7 @@ export default {
     },
     selectUnit(data) {
       delete this.query.type;
-      this.catch.unit = data.deviceName
+      this.catch.unit = data.deviceName;
       if (data == "all") {
         this.query = _.omit(this.query, "unit");
       } else {
@@ -219,20 +185,20 @@ export default {
     },
     selectDevice(data) {
       switch (data) {
-        case "all":
-          this.query = _.omit(this.query, "type");
-          break;
+        // case "all":
+        //   this.query = _.omit(this.query, "type");
+        //   break;
         case "tlsys_code":
           this.query.type = "S";
-          this.catch.type = "脱硫"
+          this.catch.type = "脱硫";
           break;
         case "txsys_code":
           this.query.type = "N";
-          this.catch.type = "脱销"
+          this.catch.type = "脱硝";
           break;
         default:
           this.query.type = "D";
-          this.catch.type = "除尘"
+          this.catch.type = "除尘";
           break;
       }
     },
@@ -244,13 +210,17 @@ export default {
       if (!this.query.type) {
         this.$message.error("请选择装置");
         return false;
-      };
-      this.query.beginTime = moment()
-          .subtract(7, "days")
-          .format("YYYY-MM-DD");
-      this.title = this.catch
-      this.query.endTime = moment().format("YYYY-MM-DD");
-      this.get_st_sp_rp(this.query);
+      }
+      this.title = this.catch;
+      let sta = moment()
+        .subtract(7, "days")
+        .format("YYYY-MM-DD");
+      let end = moment().format("YYYY-MM-DD");
+      this.time = [sta, end];
+      this.$nextTick(()=>{
+        this.get_st_sp_rp(this.query);
+      })
+      
     },
     onMonth() {
       if (!this.query.unit) {
@@ -260,13 +230,17 @@ export default {
       if (!this.query.type) {
         this.$message.error("请选择装置");
         return false;
-      };
-      this.title = this.catch
-      this.query.beginTime = moment()
-          .subtract(30, "days")
-          .format("YYYY-MM-DD");
-      this.query.endTime = moment().format("YYYY-MM-DD");
-      this.get_st_sp_rp(this.query)
+      }
+      this.title = this.catch;
+      let sta = moment()
+        .subtract(30, "days")
+        .format("YYYY-MM-DD");
+      let end = moment().format("YYYY-MM-DD");
+      this.time = [sta, end];
+      this.$nextTick(()=>{
+        this.get_st_sp_rp(this.query)
+      })
+      
     },
     checkList() {
       if (!this.query.unit) {
@@ -277,8 +251,11 @@ export default {
         this.$message.error("请选择装置");
         return false;
       }
-      this.title = this.catch
-      this.get_st_sp_rp(this.query);
+      this.title = this.catch;
+      this.$nextTick(()=>{
+        this.get_st_sp_rp(this.query);
+      })
+      
     },
     onExport() {
       if (!this.query.unit) {
@@ -288,19 +265,30 @@ export default {
       if (!this.query.type) {
         this.$message.error("请选择装置");
         return false;
-      };
-      this.title = this.catch
-      this.downloadFile('/datamonitor/startStopStatistics/selectByParamExcel',this.query)
+      }
+      this.title = this.catch;
+      // this.downloadFile(
+      //   "/datamonitor/startStopStatistics/selectByParamExcel",
+      //   this.query
+      // );
+      // console.log(this.query)
+       excel("/datamonitor/startStopStatistics/selectByParamExcel",
+        this.query
+      ).then(res=>{
+        let data = res.data;
+        let excelName = `${this.catch.area}${this.catch.plant}${this.catch.unit} 脱硫 装置启停统计表.xlsx`;
+        this.excel(data,excelName);
+      })
     },
     // 查询报表数据
     get_st_sp_rp(query) {
       this.loading = true;
       return get_st_sp_rp(query).then(res => {
         this.loading = false;
-        let data = res.data.data == "empty" ? [] : res.data.data;
+        let data = !res.data.data || res.data.data == "empty" ? [] : res.data.data;
         if (data.length) {
           let obj = {
-            startTime: "累计总时长",
+            startTime: "累计停运时长",
             outageDuration: data[0].total
           };
           data.push(obj);
@@ -308,17 +296,17 @@ export default {
         this.tableData = data;
       });
     },
-    addCellClass({row, column, rowIndex, columnIndex}){
+    addCellClass({ row, column, rowIndex, columnIndex }) {
       let len = this.tableData.length;
-      if(len){
-        if((len - 1) == rowIndex && (columnIndex == 6 || columnIndex == 7)){
-            return 'sum-cell'
+      if (len) {
+        if (len - 1 == rowIndex && (columnIndex == 6 || columnIndex == 7)) {
+          return "sum-cell";
         }
       }
     },
     //设置title
-    setTitle(obj){
-      this.title = _.assign(this.title,obj);
+    setTitle(obj) {
+      this.title = _.assign(this.title, obj);
     }
   }
 };
@@ -353,8 +341,7 @@ export default {
   }
   .div__content-wrap {
     padding: 0 32px;
-  };
-
+  }
 }
 </style>
 <style lang="scss">
@@ -399,14 +386,14 @@ export default {
   .el-table thead.is-group th {
     background: #fff;
   }
-    .sum-cell{
-    padding: 0!important;
-    background:rgba(237,241,251,1)!important;
-    font-size:16px!important;
-    font-family:PingFang-SC-Bold,PingFang-SC!important;
-    font-weight:bold!important;
-    color:rgba(63,158,255,1)!important;
-    border:1px solid rgba(220,223,230,1);
+  .sum-cell {
+    padding: 0 !important;
+    background: rgba(237, 241, 251, 1) !important;
+    font-size: 16px !important;
+    font-family: PingFang-SC-Bold, PingFang-SC !important;
+    font-weight: bold !important;
+    color: rgba(63, 158, 255, 1) !important;
+    border: 1px solid rgba(220, 223, 230, 1);
   }
 }
 </style>

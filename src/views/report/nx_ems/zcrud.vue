@@ -55,7 +55,7 @@
         <el-table-column align="center" label="耗用率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_YA['耗用率']['prop']"
             :minWidth="NX_EMS_YA['耗用率']['width']"
           ></el-table-column>
@@ -81,7 +81,7 @@
             :minWidth="NX_EMS_NS['库存量']['width']"
           ></el-table-column>
         </el-table-column>
-        <el-table-column align="center" label="纯度>99.6%">
+        <el-table-column align="center" label="总氮">
           <el-table-column
             align="center"
             label="%"
@@ -114,7 +114,7 @@
         <el-table-column align="center" label="耗用率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_NS['耗用率']['prop']"
             :minWidth="NX_EMS_NS['耗用率']['width']"
           ></el-table-column>
@@ -259,7 +259,7 @@
         <el-table-column align="center" label="工业耗水率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_YS['工业耗水率']['prop']"
             :minWidth="NX_EMS_YS['工业耗水率']['width']"
           ></el-table-column>
@@ -277,7 +277,7 @@
         <el-table-column align="center" label="除盐耗水率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_YS['除盐耗水率']['prop']"
             :minWidth="NX_EMS_YS['除盐耗水率']['width']"
           ></el-table-column>
@@ -298,7 +298,7 @@
         <el-table-column align="center" label="耗汽率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_HQL['耗汽率']['prop']"
             :minWidth="NX_EMS_HQL['耗汽率']['width']"
           ></el-table-column>
@@ -319,7 +319,7 @@
         <el-table-column align="center" label="耗气率">
           <el-table-column
             align="center"
-            label="t/万KWh"
+            label="吨/万KWh"
             :prop="NX_EMS_GAS['耗气率']['prop']"
             :minWidth="NX_EMS_GAS['耗气率']['width']"
           ></el-table-column>
@@ -329,8 +329,11 @@
       <!-- 操作栏 -->
       <el-table-column fixed="right" align="center" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-          <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+          <div v-if="scope.row.day=='合计(或加权平均)'||scope.row.day=='调整'"></div>
+          <div v-else>
+            <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
+            <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -670,12 +673,19 @@ export default {
     // 更新
     updateAddr() {
       try {
+        let mid=this.$store.state.nx_ems.row;
+        
+        for(var key in mid){
+          if(mid[key]==''){
+            mid[key]=null;
+          }
+        }
         update_nx_ems({
           projectCode: this.projectCode,
           year: this.year,
           month: this.month,
           day: this.date,
-          data: this.$store.state.nx_ems.row
+          data: mid
         }).then(res => {
           let msg = res.data.data;
           if (msg == "success") {
@@ -849,16 +859,16 @@ export default {
   }
 }
 .change_left {
-  height: 778px;
+  height: 815px;
   border-radius: 6px;
   border: 1px solid rgba(232, 232, 232, 1);
 }
 .hyj_container {
   padding: 20px;
-  height: 746px;
+  height: 780px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 .shsf_ems {
   display: flex;
@@ -885,12 +895,12 @@ export default {
 }
 
 .change_center {
-  height: 778px;
+  height: 815px;
   border-radius: 6px;
   border: 1px solid rgba(232, 232, 232, 1);
 }
 .change_right {
-  height: 778px;
+  height: 815px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

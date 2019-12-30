@@ -32,11 +32,13 @@ export const tableOption = {
       label: '发电量 (万Kwh)',
       prop: 'ELE_CAPACITY',
       sortable:true,
+      width: 200
     },
 	  {
       label: '上网电量 (万Kwh)',
       prop: 'GEN_CAPACITY',
       sortable:true,
+      width:200
     },
 	  {
       label: '统计方式',

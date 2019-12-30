@@ -5,6 +5,9 @@ export const get_XY_data = (data) => {
     let { x, y } = { x: [], y: [] };
     x = Object.keys(data);
     y = Object.values(data);
+    y = y.map(item=>{
+        return item*1
+    })
     return {
         x, y
     }

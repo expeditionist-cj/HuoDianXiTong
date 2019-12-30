@@ -4,7 +4,7 @@
       <div class="craft__wrap">
         <div class="craft__tool">
           <el-row :gutter="10">
-            <el-col :span="21">
+            <el-col :span="20">
               <!-- 组织机构选择 -->
               <SelOrg
                 @selectArear="selectArear"
@@ -15,7 +15,7 @@
                 ref="myorg"
               />
             </el-col>
-            <el-col :span="3">
+            <el-col :span="4">
               <!-- 按钮 -->
               <BtnList btnStyle="textAlign:center" @check="checkList" @reset="setReset" />
             </el-col>

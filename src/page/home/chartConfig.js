@@ -45,14 +45,14 @@ export const barData = (data={x:[],y:{now:[],before:[]}})=>{
           {
             name: '历史同期',
             type: 'bar',
-            barGap: 0,
-            data: now
+            // barGap: 0,
+            data: before
           },
           {
             name: '当前',
             type: 'bar',
-            barGap: 0,
-            data: before
+            // barGap: 0,
+            data: now
           },
         ]
       }

@@ -16,7 +16,8 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+    };
   },
   components: {},
   computed: {},
