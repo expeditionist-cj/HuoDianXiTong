@@ -39,7 +39,7 @@
               resetContent="查询近一月"
               checkContent="查询近一周"
               btnStyle="textAlign:left;margin-left:32px;display:inline-block;width:auto"
-              @check= "onWeek"
+              @check="onWeek"
               @reset="onMonth"
               resetType="primary"
             />
@@ -55,6 +55,7 @@
       <div class="div__content-wrap">
         <layOutTable>
           <span
+            class="title"
             slot="title"
           >{{this.title.area}}{{this.title.plant}}{{this.title.unit}} {{this.title.type}} 装置启停统计表</span>
           <div slot="table">
@@ -73,12 +74,24 @@
               <el-table-column align="center" prop="crew" label="机组" min-width="120"></el-table-column>
               <el-table-column align="center" prop="device" label="装置" width="120"></el-table-column>
               <el-table-column align="center" prop="stopTime" label="解列时刻" min-width="160" sortable></el-table-column>
-              <el-table-column align="center" prop="startTime" label="并网时刻" min-width="160" sortable>
+              <el-table-column
+                align="center"
+                prop="startTime"
+                label="并网时刻"
+                min-width="160"
+                sortable
+              >
                 <!-- <template slot-scope="scope">
                   <span style="color:red">{{scope.row.startTime}}</span>
                 </template>-->
               </el-table-column>
-              <el-table-column align="center" prop="outageDuration" label="停运时长(h)" min-width="160" sortable>
+              <el-table-column
+                align="center"
+                prop="outageDuration"
+                label="停运时长(h)"
+                min-width="160"
+                sortable
+              >
                 <!-- <template slot-scope="scope">
                   
                 </template>-->
@@ -97,7 +110,7 @@ import "moment/locale/zh-cn";
 import { get_st_sp_rp, get_excel } from "../../../api/report/start_stop_rp";
 import _ from "lodash";
 import layOutTable from "../../../components/tableLayout/index";
-import {excel} from "@/api/common";
+import { excel } from "@/api/common";
 moment.locale("zh-cn");
 export default {
   props: {},
@@ -217,10 +230,9 @@ export default {
         .format("YYYY-MM-DD");
       let end = moment().format("YYYY-MM-DD");
       this.time = [sta, end];
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.get_st_sp_rp(this.query);
-      })
-      
+      });
     },
     onMonth() {
       if (!this.query.unit) {
@@ -237,10 +249,9 @@ export default {
         .format("YYYY-MM-DD");
       let end = moment().format("YYYY-MM-DD");
       this.time = [sta, end];
-      this.$nextTick(()=>{
-        this.get_st_sp_rp(this.query)
-      })
-      
+      this.$nextTick(() => {
+        this.get_st_sp_rp(this.query);
+      });
     },
     checkList() {
       if (!this.query.unit) {
@@ -252,10 +263,9 @@ export default {
         return false;
       }
       this.title = this.catch;
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.get_st_sp_rp(this.query);
-      })
-      
+      });
     },
     onExport() {
       if (!this.query.unit) {
@@ -272,20 +282,22 @@ export default {
       //   this.query
       // );
       // console.log(this.query)
-       excel("/datamonitor/startStopStatistics/selectByParamExcel",
+      excel(
+        "/datamonitor/startStopStatistics/selectByParamExcel",
         this.query
-      ).then(res=>{
+      ).then(res => {
         let data = res.data;
         let excelName = `${this.catch.area}${this.catch.plant}${this.catch.unit} 脱硫 装置启停统计表.xlsx`;
-        this.excel(data,excelName);
-      })
+        this.excel(data, excelName);
+      });
     },
     // 查询报表数据
     get_st_sp_rp(query) {
       this.loading = true;
       return get_st_sp_rp(query).then(res => {
         this.loading = false;
-        let data = !res.data.data || res.data.data == "empty" ? [] : res.data.data;
+        let data =
+          !res.data.data || res.data.data == "empty" ? [] : res.data.data;
         if (data.length) {
           let obj = {
             startTime: "累计停运时长",
@@ -395,5 +407,11 @@ export default {
     color: rgba(63, 158, 255, 1) !important;
     border: 1px solid rgba(220, 223, 230, 1);
   }
+}
+.title {
+  font-size: 18px;
+  font-family: PingFang-SC-Heavy, PingFang-SC;
+  font-weight: 800;
+  color: rgba(51, 51, 51, 1);
 }
 </style>

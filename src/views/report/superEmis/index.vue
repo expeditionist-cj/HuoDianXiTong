@@ -41,7 +41,7 @@
       </div>
       <div class="div__content-wrap">
         <layoutTable>
-          <span slot="title">{{this.query.y}} 年 {{this.query.m}} 月装置超限、超排统计表</span>
+          <span class="title" slot="title">{{this.y}} 年 {{this.m}} 月装置超限、超排统计表</span>
           <div slot="table" v-if="tableShow" v-loading="loading">
             <el-table border :data="tableData" style="width: 100%" :height="tableHeight">
               <el-table-column align="center" prop="areaName" label="区域" width="80" fixed></el-table-column>
@@ -71,7 +71,7 @@ import "moment/locale/zh-cn";
 import { get_emsOver } from "../../../api/report/superEmis";
 import _ from "lodash";
 import layoutTable from "../../../components/tableLayout/index";
-import {excel} from "@/api/common";
+import { excel } from "@/api/common";
 moment.locale("zh-cn");
 export default {
   props: {},
@@ -90,7 +90,9 @@ export default {
       query: {
         y: moment(Date.now()).year(),
         m: moment(Date.now()).month() + 1
-      }
+      },
+      y:"",
+      m:""
     };
   },
   components: {
@@ -103,6 +105,8 @@ export default {
     this.tableHeight = this.$refs.superEmis.offsetHeight - 210;
     this.$nextTick(() => {
       this.tableShow = true;
+      this.y = this.query.y;
+      this.m = this.query.m;
       this.get_emsOver(this.query);
     });
   },
@@ -114,17 +118,20 @@ export default {
   },
   methods: {
     checkList() {
+      if (!this.query.unit) {
+        return this.$message.error("请选择电厂");
+      }
+      this.y = this.query.y;
+      this.m = this.query.m;
       this.get_emsOver(this.query);
     },
     onExport() {
       // this.downloadFile("/datamonitor/emsOver/exportStat", this.query);
-       excel("/datamonitor/emsOver/exportStat",
-        this.query
-      ).then(res=>{
+      excel("/datamonitor/emsOver/exportStat", this.query).then(res => {
         let data = res.data;
         let excelName = `${this.query.y}年${this.query.m}月 装置超限、超排统计表.xls`;
-        this.excel(data,excelName);
-      })
+        this.excel(data, excelName);
+      });
     },
     selectArear(data) {
       delete this.query.plant;
@@ -159,7 +166,8 @@ export default {
         midData.forEach((item, index) => {
           item = {
             ...item,
-            idx: item.idx == "so2" ? "SO₂" : item.idx == "nox" ? "NOx" : item.idx
+            idx:
+              item.idx == "so2" ? "SO₂" : item.idx == "nox" ? "NOx" : item.idx
           };
           datas.push(item);
         });
@@ -244,5 +252,11 @@ export default {
   .el-table thead.is-group th {
     background: #fff;
   }
+}
+.title {
+  font-size: 18px;
+  font-family: PingFang-SC-Heavy, PingFang-SC;
+  font-weight: 800;
+  color: rgba(51, 51, 51, 1);
 }
 </style>

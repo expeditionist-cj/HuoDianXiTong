@@ -12,6 +12,15 @@ export const areaMap = {
     "W3.DB": "东北",
     "W3.NM": "内蒙"
 }
+// 区域code 对应 中文
+export const areaMapCons = {
+    "JX": "江西",
+    "HN": "河南",
+    "XN": "西南",
+    "XB": "西北",
+    "DB": "东北",
+    "NM": "内蒙"
+}
 // 首页基础数据 映射
 export const baseMap = {
     "load": "总负荷 (WM)",
@@ -315,7 +324,7 @@ export const NX_EMS_DH = {
         label: 'KWh',
         width: math_clm_width("#1电耗 ")
     },
-    '合计': {
+    '电耗合计': {
         prop: "dh_hj",
         label: "合计",
         label: '万KWh',
@@ -345,7 +354,7 @@ export const NX_EMS_DH = {
         label: '万KWh',
         width: math_clm_width("#1分摊 ")
     },
-    '合计': {
+    '分摊合计': {
         prop: "ft_hj",
         label: "合计",
         label: '万KWh',

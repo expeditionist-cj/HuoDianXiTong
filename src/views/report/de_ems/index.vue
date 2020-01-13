@@ -32,6 +32,7 @@
           </el-col>
           <el-col :span="7">
             <el-button
+            v-if="desulphurize_add"
               @click="onAdd"
               style="position:relative;right:-20px"
               type="primary"
@@ -79,6 +80,7 @@
 
 <script>
 import layoutTable from "../../../components/tableLayout/index";
+import {mapGetters} from 'vuex';
 import { get_de_ems } from "../../../api/report/de_ems";
 import moment from "moment";
 import "moment/locale/zh-cn";
@@ -128,9 +130,15 @@ export default {
   computed: {
     isSucess() {
       return this.$store.state.nx_ems.isSucess;
-    }
+    },
+    ...mapGetters(["permissions"])
   },
-  created() {},
+  created() {
+      this.desulphurize_add = this.permissions["desulphurize_add"]; // 新增
+      this.desulphurize_update = this.permissions["desulphurize_update"]; // 修改
+      this.desulphurize_delete = this.permissions["desulphurize_delete"]; // 删除
+      this.desulphurize_download = this.permissions["desulphurize_download"]; // 下载
+  },
   mounted() {
     this.tableShow = false;
     this.$nextTick(() => {

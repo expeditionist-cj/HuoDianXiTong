@@ -42,12 +42,12 @@
       </div>
       <div class="div__content-wrap">
         <layoutTable>
-          <span slot="title"
-            >{{ y }} 年 {{ m }} 月 {{ area }}/{{
-              plant
+          <span class="title" slot="title">
+            {{ y }} 年 {{ m }} 月 {{ area }}/{{
+            plant
             }}
-            脱硫脱硝装置发电量统计表</span
-          >
+            脱硫脱硝装置发电量统计表
+          </span>
           <div class="content-table" slot="table" v-if="tableShow">
             <avue-crud
               ref="crud"
@@ -70,7 +70,7 @@ import { tableOption } from "../../../const/crud/report/ele_gen_en";
 import { rd_clm } from "./util";
 import { get_device_power } from "../../../api/report/ele_gen_en";
 import layoutTable from "../../../components/tableLayout/index";
-import {excel} from "@/api/common";
+import { excel } from "@/api/common";
 moment.locale("zh-cn");
 let area = "";
 let plant = "";
@@ -130,22 +130,22 @@ export default {
       this.get_device_power(this.query);
     },
     onExport() {
-      if(!this.query.projectCode){
-        return this.$message.error('请先选择电厂');
+      if (!this.query.projectCode) {
+        return this.$message.error("请先选择电厂");
       }
       // http://192.168.59.7:9999/datamonitor/device_power/export?projectCode=ELXM&year=2019&month=12
       // this.downloadFile("/datamonitor/device_power/export", {
       //   ...this.query,
       //   plantName: plant
       // });
-      excel("/datamonitor/device_power/export",{
+      excel("/datamonitor/device_power/export", {
         ...this.query,
         plantName: plant
-      }).then(res=>{
+      }).then(res => {
         let data = res.data;
         let excelName = `${this.y}年${this.m}月 ${this.area}/${this.plant} 脱硫脱硝装置发电量统计表.xls`;
-        this.excel(data,excelName);
-      })
+        this.excel(data, excelName);
+      });
     },
     selectArear(data) {
       area = data.name;
@@ -237,6 +237,14 @@ export default {
   }
   .el-table thead.is-group th {
     background: #fff;
+    color: #909399;
+    font-size: 12px;
   }
+}
+.title {
+  font-size: 18px;
+  font-family: PingFang-SC-Heavy, PingFang-SC;
+  font-weight: 800;
+  color: rgba(51, 51, 51, 1);
 }
 </style>

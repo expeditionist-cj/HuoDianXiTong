@@ -149,6 +149,9 @@ export default {
     },
     // 点击查询
     checkList() {
+      if (!this.fetchAlarmTableDataQuery.pd_cn) {
+        return this.$message.error("请选择电厂");
+      }
       this.getCraftPage({
         ...this.page,
         ...this.fetchAlarmTableDataQuery

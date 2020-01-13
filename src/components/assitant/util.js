@@ -1,3 +1,4 @@
+// 处理返回结果，拼凑字段
 export const formatterCurveData=(data, type = "line", smooth = true)=> {
     data = data == null || !data.length ? [] : data;
     var xData, series = [];
@@ -29,7 +30,7 @@ export const formatterCurveData=(data, type = "line", smooth = true)=> {
         series
     }
   }
-
+// 将返回结果拼凑为options结构
   export const getOption=(obj)=> {
     return {
         title: {
@@ -57,10 +58,10 @@ export const formatterCurveData=(data, type = "line", smooth = true)=> {
         legend: {
             // data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎'],
             textStyle: {
-                color: "#7a86a0",
+                color: "#333333",
                 fontSize: 12
             },
-            inactiveColor:"#d2c3c329",
+            inactiveColor:"#999999",
             top:10,
         },
         dataZoom: [
@@ -86,8 +87,8 @@ export const formatterCurveData=(data, type = "line", smooth = true)=> {
             }
         ],
         grid: {
-            left: '1%',
-            right: '1%',
+            left: '6%',
+            right: '6%',
             bottom: 30,
             top: '20%',
             containLabel: false
@@ -95,10 +96,11 @@ export const formatterCurveData=(data, type = "line", smooth = true)=> {
         color:["#10cfcb","#ff514c","#ffd64a","#30e600","#004CFF","#0000ff","#c2e4ff","#c80180","#008fff","#7469fb"],
         xAxis: {
             type: 'category',
-            boundaryGap: false,
+            boundaryGap: true,
             data: obj.x,
             axisLabel: {
                 show: true,
+                align: 'center',
                  textStyle: {
                    color: '#3f4a61',  //更改坐标轴文字颜色
                    fontSize : 12     //更改坐标轴文字大小

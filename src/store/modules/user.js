@@ -52,7 +52,8 @@ const user = {
         data: userInfo,
         key: 'scaxscaxscaxscax',
         param: ['password']
-      })
+      });
+      console.log(user)
       return new Promise((resolve, reject) => {
         loginByUsername(user.username, user.password, user.code, user.randomStr).then(response => {
           const data = response.data

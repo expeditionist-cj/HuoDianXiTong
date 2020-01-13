@@ -1,5 +1,9 @@
 <template>
   <div class="mycard" :style="mycardStyle">
+    <div class="mycard__title" v-if="isShowTitle">
+      <slot name="title"></slot>
+    </div>
+    <!-- <div class="segmentation" v-if="isShowTitle"></div> -->
     <div class="mycard__header">
       <slot name="header"></slot>
     </div>
@@ -13,10 +17,14 @@
 <script>
 export default {
   props: {
-    mycardStyle:String,
-    showSegmentation:{
-      type:Boolean,
-      default:true
+    mycardStyle: String,
+    showSegmentation: {
+      type: Boolean,
+      default: true
+    },
+    isShowTitle: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -42,6 +50,10 @@ export default {
     height: 1px;
     background: rgba(233, 233, 233, 1);
   }
+  .mycard__title {
+    height: 92px;
+    line-height: 92px;
+  }
   .mycard__header {
     height: 46px;
     line-height: 46px;
@@ -53,7 +65,7 @@ export default {
   }
   .mycard__content {
     height: calc(100% - 47px);
-    padding:8px 16px;
+    padding: 8px 16px;
   }
 }
 </style>

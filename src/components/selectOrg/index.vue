@@ -232,7 +232,7 @@ export default {
         reset(value);
         return false;
       }
-      getAreaAndPlant(0, value.deptId)
+      getAreaAndPlant(1, value.deptId)
         .then(response => {
           let {
             data,

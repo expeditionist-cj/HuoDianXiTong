@@ -9,17 +9,18 @@ import './permission' // 权限
 import './error' // 日志
 import router from './router/router'
 import store from './store'
-import {loadStyle,filterForm,vaildData} from './util/util'
+import { loadStyle, filterForm, vaildData } from './util/util'
 import * as urls from '@/config/env'
-import {iconfontUrl, iconfontVersion} from '@/config/env'
+import { iconfontUrl, iconfontVersion } from '@/config/env'
 import * as filters from './filters' // 全局filter
+import "@/components/index.js"; // 引入全局组件
 import './styles/common.scss';
 import "./styles/changeElementStyle.scss"
 import basicContainer from './components/basic-container/main'
 // 插件 json 展示
 import vueJsonTreeView from 'vue-json-tree-view'
 
-import {validatenull} from '@/util/validate';
+import { validatenull } from '@/util/validate';
 
 // websocket
 import VueNativeSock from 'vue-native-websocket';
@@ -31,10 +32,10 @@ import SelOrg from "@/components/selectOrg/index";
 import BtnList from "@/components/checkAndResetBtn/index";
 
 // 引入表表导出功能
-import {install} from "./util/downLoadExcel"
+import { install } from "./util/downLoadExcel"
 
 // 引入vue-echarts
-import ECharts from 'vue-echarts' 
+import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/chart/line'
@@ -45,7 +46,7 @@ import 'echarts/lib/component/radar';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/legend';
 import "echarts/map/js/china.js";
-import {scoketUrl} from "./config/env"
+import { scoketUrl } from "./config/env"
 import MyIcon from "@/components/icon/index";
 import AssitantLayout from "@/components/assitantLayout/index"
 import Nodata from "@/components/nodata/index"
@@ -75,9 +76,9 @@ Vue.component('AssitantLayout', AssitantLayout);
 Vue.component('Nodata', Nodata);
 // 注册socket
 Vue.use(VueNativeSock, scoketUrl, {
-  reconnection: true, 
-  reconnectionAttempts: 5, 
-  reconnectionDelay: 3000, 
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 3000,
 })
 
 // 加载相关url地址

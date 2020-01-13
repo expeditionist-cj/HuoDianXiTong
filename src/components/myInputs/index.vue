@@ -2,7 +2,7 @@
   <div>
     <div class="inputs">
       <span>{{ label }}({{ unit }}):</span>
-      <el-input size="small" type="number" :disabled="disabled" class="__input" v-model="row[att]" @input="onIpt" oninput="value=value.replace(/[^\d.]/g,'');"></el-input>
+      <el-input size="small" :disabled="disabled" class="__input" v-model="row[att]" @input="onIpt" oninput="value=value.replace(/[^\d.]/g,'');"></el-input>
     </div>
   </div>
 </template>

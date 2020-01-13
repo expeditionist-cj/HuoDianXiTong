@@ -25,3 +25,10 @@ export const getBaseData = (query) => {
 }
 
 // 能耗与物耗
+export const getCons = (query) => {
+    return request({
+        url: '/datamonitor/homePage/homePageEnergyMaterial',
+        method: 'get',
+        params: query
+    })
+}

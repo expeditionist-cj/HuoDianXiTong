@@ -32,6 +32,7 @@
           </el-col>
           <el-col :span="7">
             <el-button
+            v-if="desulphurize_add"
               @click="onAdd"
               style="position:relative;right:-20px"
               type="primary"
@@ -85,6 +86,7 @@ import "moment/locale/zh-cn";
 import Zcurd from "./zcrud";
 import { hasNoDataDays } from "./util";
 import {excel} from "@/api/common";
+import {mapGetters} from 'vuex'
 let area = "";
 let plant = "";
 export default {
@@ -118,9 +120,12 @@ export default {
   computed: {
     isSucess() {
       return this.$store.state.nx_ems.isSucess;
-    }
+    },
+    ...mapGetters(["permissions"])
   },
-  created() {},
+  created() {
+      this.desulphurize_add = this.permissions["txconsume_add"]; // 新增
+  },
   mounted() {
     this.tableShow = false;
     this.$nextTick(() => {

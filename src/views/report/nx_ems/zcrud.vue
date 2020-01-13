@@ -162,8 +162,8 @@
           <el-table-column
             align="center"
             label="万KWh"
-            :prop="NX_EMS_DH['合计']['prop']"
-            :minWidth="NX_EMS_DH['合计']['width']"
+            :prop="NX_EMS_DH['电耗合计']['prop']"
+            :minWidth="NX_EMS_DH['电耗合计']['width']"
           ></el-table-column>
         </el-table-column>
 
@@ -212,8 +212,8 @@
           <el-table-column
             align="center"
             label="万KWh"
-            :prop="NX_EMS_DH['合计']['prop']"
-            :minWidth="NX_EMS_DH['合计']['width']"
+            :prop="NX_EMS_DH['分摊合计']['prop']"
+            :minWidth="NX_EMS_DH['分摊合计']['width']"
           ></el-table-column>
         </el-table-column>
 
@@ -331,8 +331,8 @@
         <template slot-scope="scope">
           <div v-if="scope.row.day=='合计(或加权平均)'||scope.row.day=='调整'"></div>
           <div v-else>
-            <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-            <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button v-if="txconsume_update" @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
+            <el-button v-if="txconsume_del" @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
           </div>
         </template>
       </el-table-column>
@@ -611,9 +611,9 @@ import {
   NX_EMS_GAS
 } from "../../../dict/index";
 import myInputs from "@/components/myInputs";
-import tongJi from "@/components/tongJi";
 import { hasDays } from "./util";
 import moment from "moment";
+import {mapGetters} from 'vuex';
 import {
   get_nx_ems,
   update_nx_ems,
@@ -663,10 +663,14 @@ export default {
 
   components: {
     myInputs,
-    tongJi
   },
-  computed: {},
-  created() {},
+  computed: {
+    ...mapGetters(["permissions"])
+  },
+  created() {
+    this.desulphurize_update = this.permissions["txconsume_update"]; // 修改
+    this.desulphurize_delete = this.permissions["txconsume_del"]; // 删除
+  },
   mounted() {},
   watch: {},
   methods: {

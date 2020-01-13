@@ -24,12 +24,16 @@
 
 <script>
 import Card from "@/components/card/index";
+
 export default {
-  props: {},
+  props: {
+    sonModelId: ""
+  },
   data() {
     return {
       query: {},
-      cnName: {}
+      cnName: {},
+      title: {}
     };
   },
   components: { Card },
@@ -70,4 +74,5 @@ export default {
     margin-top: 8px;
   }
 }
+
 </style>

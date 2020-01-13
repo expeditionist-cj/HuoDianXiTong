@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { areaMap, baseMap, map_map } from "../../dict/index";
+import { areaMap, baseMap, map_map,areaMapCons } from "../../dict/index";
 // 循环出x轴数据
 export const get_XY_data = (data) => {
     let { x, y } = { x: [], y: [] };
@@ -12,7 +12,7 @@ export const get_XY_data = (data) => {
         x, y
     }
 }
-// 格式化雷达图数据
+// 格式化减排统计雷达图数据
 export const formatterRadarData = (data) => {
     if (!Object.keys(data).length) {
         return {
@@ -29,6 +29,35 @@ export const formatterRadarData = (data) => {
     let obj = {};
     _.forOwn(data, (value, key) => {
         obj[areaMap[key]] = value
+    });
+    let indicator = Object.keys(obj).map(item => {
+        return {
+            text: item
+        }
+    });
+
+    return {
+        indicator,
+        data: Object.values(obj)
+    }
+}
+// 格式化能耗物耗统计雷达图数据
+export const formatterRadarDataCons = (data) => {
+    if (!Object.keys(data).length) {
+        return {
+            indicator: [
+                { text: "东北" },
+                { text: "内蒙" },
+                { text: "河南" },
+                { text: "江西" },
+                { text: "西北" }
+            ],
+            data: []
+        }
+    }
+    let obj = {};
+    _.forOwn(data, (value, key) => {
+        obj[areaMapCons[key]] = value
     });
     let indicator = Object.keys(obj).map(item => {
         return {

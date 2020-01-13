@@ -42,7 +42,7 @@
             <div slot="header" class>
               <span>减排统计</span>
               <MyTab
-                style="float:right;margin:16px 0;"
+                style="float:right;margin:0px 0;"
                 :tabsList="['SO2','NOx','除尘']"
                 @clickItem="SwitchEmission"
               />
@@ -65,24 +65,24 @@
               <span>能耗与物耗统计</span>
               <div style="float:right">
                 <MyTab
-                  style="margin:16px 40px 16px 0;display:inline-block;"
+                  style="margin:0px 40px 16px 0;display:inline-block;"
                   :tabsList="['电能','吸收剂','还原剂']"
-                  @clickItem="SwitchConsumption"
+                  @clickItem="SwitchConsumptionType"
                 />
                 <MyTab
-                  style="margin:16px 0;float:right"
+                  style="margin:0px 0;float:right"
                   :tabsList="['发电量','减排量']"
-                  @clickItem="SwitchConsumption"
+                  @clickItem="SwitchConsumptionCaliber"
                 />
               </div>
             </div>
             <div slot="content" class="height100">
               <ul class="clearfix height100">
                 <li class="fl height100" style="width:60%">
-                  <v-chart autoresize :options="emissionBar" />
+                  <v-chart autoresize :options="consumptionBar" />
                 </li>
                 <li class="fl height100" style="width:40%">
-                  <v-chart autoresize :options="emissionRadar2" />
+                  <v-chart autoresize :options="consumptionRadar" />
                 </li>
               </ul>
             </div>
@@ -111,12 +111,13 @@ import {
 } from "./chartConfig";
 import { RandomArray, createArray } from "@/util/util";
 import MyList from "./list";
-import { get_gen_cap, getEmis, getBaseData } from "../../api/home";
+import { get_gen_cap, getEmis, getBaseData, getCons } from "../../api/home";
 import {
   get_XY_data,
   formatterRadarData,
   formatterMap_key,
-  formatterBase
+  formatterBase,
+  formatterRadarDataCons
 } from "./util";
 import _ from "lodash";
 import { map_map } from "../../dict/index";
@@ -223,6 +224,26 @@ export default {
           }
         ]
       }),
+      //能耗与物耗统计柱状图配置
+      consumptionBar: barConfig({
+        color: ["#E3E4EC", "#0082FF"],
+        xData: [],
+        text: "月度历史同期对比",
+        seriesData: [
+          {
+            name: "历史同期",
+            type: "bar",
+            barGap: 0,
+            data: []
+          },
+          {
+            name: "当前",
+            type: "bar",
+            barGap: 0,
+            data: []
+          }
+        ]
+      }),
       // 各区域当月减排量对比 雷达图配置
       emissionRadar: radarConfig({
         text: "各区域当月减排量对比",
@@ -235,7 +256,7 @@ export default {
         ],
         data: []
       }),
-      emissionRadar2: radarConfig({
+      consumptionRadar: radarConfig({
         text: "各区域当月消耗对比",
         indicator: [
           { text: "东北" },
@@ -272,7 +293,11 @@ export default {
           type: "capacity"
         }
       ],
-      emi_type: "S" // 减排统计
+      emi_type: "S", // 减排统计
+      query: {
+        type: "power",
+        caliber: "ele"
+      } //能耗物耗统计
     };
   },
   components: {
@@ -285,11 +310,11 @@ export default {
     ...mapGetters(["website"])
   },
   mounted() {
-    this.init(this.emi_type);
+    this.init(this.emi_type,this.query);
   },
   methods: {
     // 初始化加载
-    init(type) {
+    init(type,query) {
       // 发电量和上网电量
       get_gen_cap().then(res => {
         let data = res.data.data;
@@ -312,6 +337,8 @@ export default {
       });
       // 减排统计
       this.getEmis(type);
+      // 能耗物耗统计
+      this.getCons(query);
       // // 基础数据
       getBaseData().then(res => {
         let data = res.data.data;
@@ -338,11 +365,10 @@ export default {
       });
     },
     // 切换减排统计
-    SwitchEmission(item, idx) {
+    SwitchEmission(item) {
       switch (item) {
         case "SO2":
           this.emi_type = "S";
-
           break;
         case "NOx":
           this.emi_type = "N";
@@ -354,8 +380,30 @@ export default {
       this.getEmis(this.emi_type);
     },
     // 切换能耗于物耗统计
-    SwitchConsumption(item, idx) {
-      console.log(item);
+    SwitchConsumptionType(item) {
+      switch (item) {
+        case "电能":
+          this.query.type = "power";
+          break;
+        case "吸收剂":
+          this.query.type = "dope";
+          break;
+        default:
+          this.query.type = "deo";
+          break;
+      }
+      this.getCons(this.query);
+    },
+    SwitchConsumptionCaliber(item) {
+      switch (item) {
+        case "发电量":
+          this.query.caliber = "ele";
+          break;
+        default:
+          this.query.caliber = "emi";
+          break;
+      }
+      this.getCons(this.query);
     },
     // 渲染减排统计
     getEmis(type) {
@@ -375,10 +423,27 @@ export default {
           indicator: formatterRadarData(orgcodeData).indicator,
           data: formatterRadarData(orgcodeData).data
         });
-        this.emissionRadar2 = radarConfig({
+      });
+    },
+    // 渲染能耗物耗统计
+    getCons(query) {
+      getCons(query).then(res => {
+        let data = res.data.data;
+        let nowma=data.now;
+        let beforema=data.before;
+        let orgcodeData=data.orgcodeData;
+        let {
+          x,
+          y: { now, before }
+        } = { x: [], y: { now: [], before: [] } };
+        x = get_XY_data(nowma).x;
+        now = get_XY_data(nowma).y;
+        before = get_XY_data(beforema).y;
+        this.consumptionBar = barConfig(barData({ x, y: { now, before } }));
+        this.consumptionRadar = radarConfig({
           text: "各区域当月消耗对比",
-          indicator: formatterRadarData(orgcodeData).indicator,
-          data: formatterRadarData(orgcodeData).data
+          indicator: formatterRadarDataCons(orgcodeData).indicator,
+          data: formatterRadarDataCons(orgcodeData).data
         });
       });
     }

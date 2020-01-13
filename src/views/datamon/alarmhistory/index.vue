@@ -320,7 +320,9 @@ export default {
     },
     // 查询历史数据列表
     checkList() {
-      if (!this.time.length) {
+      if (!this.query.sys) {
+        return this.$message.error("请选择电厂");
+      }else if (!this.time.length) {
         return this.$message.error("请选择查询时间");
       }
       this.getList(this.page, this.query);

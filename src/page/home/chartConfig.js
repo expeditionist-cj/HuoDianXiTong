@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { areaMap} from "../../dict/index"
+import { areaMap } from "../../dict/index"
 export const pieData = (data = {
     dmap: {},
     nmap: { "W3.JX": "0.25", "W3.HN": "0.58", "W3.XN": "0.17" },
@@ -35,52 +35,52 @@ export const pieData = (data = {
         }
     ]
 }
-export const barData = (data={x:[],y:{now:[],before:[]}})=>{
-    let {x,y:{now,before}} = data;
+export const barData = (data = { x: [], y: { now: [], before: [] } }) => {
+    let { x, y: { now, before } } = data;
     return {
-        color:["#E3E4EC","#0082FF"],
-        xData:x,
-        text:"月度历史同期对比",
-        seriesData:[
-          {
-            name: '历史同期',
-            type: 'bar',
-            // barGap: 0,
-            data: before
-          },
-          {
-            name: '当前',
-            type: 'bar',
-            // barGap: 0,
-            data: now
-          },
+        color: ["#E3E4EC", "#0082FF"],
+        xData: x,
+        text: "月度历史同期对比",
+        seriesData: [
+            {
+                name: '历史同期',
+                type: 'bar',
+                // barGap: 0,
+                data: before
+            },
+            {
+                name: '当前',
+                type: 'bar',
+                // barGap: 0,
+                data: now
+            },
         ]
-      }
+    }
 }
-export const radarData = (data)=>{
+export const radarData = (data) => {
     data || {
-        text:"各区域当月消耗对比",
-        indicator:[
-          {text:"东北"},
-          {text:"内蒙"},
-          {text:"河南"},
-          {text:"江西"},
-          {text:"西北"}
+        text: "各区域当月消耗对比",
+        indicator: [
+            { text: "东北" },
+            { text: "内蒙" },
+            { text: "河南" },
+            { text: "江西" },
+            { text: "西北" }
         ],
-        data:[]
+        data: []
     }
     return {
-        text:data.name,
-        indicator:data.indicator,
-        data:data.data
+        text: data.name,
+        indicator: data.indicator,
+        data: data.data
     }
 }
 // 显示tip
 export const pieTip = (data) => {
     let html = ""
-     _.forOwn(data, function (value, key) {
+    _.forOwn(data, function (value, key) {
         html += `
-            <div>${areaMap[key]}：${(value*100).toFixed(2)}%</div>
+            <div>${areaMap[key]}：${(value * 100).toFixed(2)}%</div>
         `
     });
     return html || "暂无数据"
@@ -283,10 +283,12 @@ export let radarConfig = (obj = {
 // 地图option 配置
 export let mapConfig = (obj = {
     data: {},
-    tipFun: (res) => { console.log(res)}
+    tipFun: (res) => {
+        //console.log(res)
+    }
 }) => {
     let { data, tipFun } = obj;
-    console.log(data)
+    // console.log(data)
     return {
 
         tooltip: {

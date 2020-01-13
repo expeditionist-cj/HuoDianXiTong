@@ -9,27 +9,27 @@
         <th colspan="2">脱硝设计指标</th>
       </tr>
       <tr>
-        <td>脱硝效率</td>
+        <td>脱硝效率(%)</td>
         <td class="ellipsis" :title="data.xefficiency">{{data.xefficiency| formatValue}}</td>
       </tr>
       <tr>
-        <td>入口NOx浓度</td>
+        <td>入口NOx浓度(mg/Nm3)</td>
         <td class="ellipsis" :title="data.xinputNox">{{data.xinputNox| formatValue}}</td>
       </tr>
       <tr>
-        <td>反应器设计入口烟气量（干基，6%烟气量）</td>
+        <td>反应器设计入口烟气量（干基，6%烟气量）(Nm3/h)</td>
         <td class="ellipsis" :title="data.xinputGas">{{data.xinputGas| formatValue}}</td>
       </tr>
       <tr>
-        <td>装置电耗</td>
+        <td>装置电耗(KWh)</td>
         <td class="ellipsis" :title="data.xelectricRate">{{data.xelectricRate| formatValue}}</td>
       </tr>
       <tr>
-        <td>还原剂消耗量</td>
+        <td>还原剂消耗量(t/h)</td>
         <td class="ellipsis" :title="data.xreductantPower">{{data.xreductantPower| formatValue}}</td>
       </tr>
       <tr>
-        <td>蒸汽耗量</td>
+        <td>蒸汽耗量(m3/h)</td>
         <td class="ellipsis" :title="data.xwaterPower">{{data.xwaterPower| formatValue}}</td>
       </tr>
     </table>

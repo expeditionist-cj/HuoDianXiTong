@@ -325,8 +325,8 @@
         <template slot-scope="scope">
           <div v-if="scope.row.date=='合计'||scope.row.date=='调整'"></div>
           <div v-else>
-            <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-            <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button v-if= "desulphurize_update" @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
+            <el-button v-if= "desulphurize_delete" @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
           </div>
         </template>
       </el-table-column>
@@ -671,8 +671,8 @@ import {
   DE_EMS_YS
 } from "../../../dict/index";
 import myInputs from "@/components/myInputs";
-import tongJi from "@/components/tongJi";
 import { hasDays, hasValue } from "./util";
+import {mapGetters} from 'vuex';
 import {
   del_de_ems,
   update_de_ems,
@@ -726,10 +726,14 @@ export default {
   },
   components: {
     myInputs,
-    tongJi
   },
-  computed: {},
-  created() {},
+  computed: {
+    ...mapGetters(["permissions"])
+  },
+  created() {
+    this.desulphurize_update = this.permissions["desulphurize_update"]; // 修改
+    this.desulphurize_delete = this.permissions["desulphurize_delete"]; // 删除
+  },
   mounted() {},
   watch: {},
   methods: {

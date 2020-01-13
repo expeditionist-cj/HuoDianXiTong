@@ -17,7 +17,7 @@ export const getDustData = (query) => {
 }
 // 查询模型实列曲线过去两小时运行情况
 export const getCurveData = (instanceId,
-    beginTime = moment(Date.now()).subtract(2, "hours").format("YYYY-MM-DD HH:mm:ss"),
+    beginTime = moment(Date.now()).subtract(3, "hours").format("YYYY-MM-DD HH:mm:ss"),
     endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')) => {
     return request.get("/smartassist/basicinfo/queryCurveData", {
         params: {

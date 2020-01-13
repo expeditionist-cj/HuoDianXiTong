@@ -21,6 +21,7 @@
                 :type="passwordType"
                 v-model="loginForm.password"
                 auto-complete="off"
+                @paste.native.capture.prevent="handlePaste"
                 placeholder="请输入密码">
         <i class="el-icon-view el-input__icon"
            slot="suffix"
@@ -134,6 +135,7 @@
       handleLogin() {
         this.$refs.loginForm.validate(valid => {
           if (valid) {
+            console.log(this.loginForm)
             this.$store.dispatch("LoginByUsername", this.loginForm).then(() => {
               this.$router.push({path: this.tagWel.value});
             }).catch(() => {

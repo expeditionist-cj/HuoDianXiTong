@@ -6,6 +6,7 @@ import tags from './modules/tags'
 import logs from './modules/logs'
 import nx_ems from "./modules/nx_ems"
 import getters from './getters'
+import assitantTitle from './modules/assitantTitle'
 
 Vue.use(Vuex)
 const store = new Vuex.Store({
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     common,
     logs,
     tags,
-    nx_ems
+    nx_ems,
+    assitantTitle
   },
   getters
 })
