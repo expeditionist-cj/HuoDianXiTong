@@ -2,61 +2,116 @@
   <div class="superEmis" ref="superEmis">
     <Card cardStyles="margin-bottom:16px;padding:12px 32px;">
       <div class="div__tool-wrap">
-        <el-row :gutter="40">
-          <el-col :span="6">
-            <div class="select__wrap">
-              <div>选择时间：</div>
-              <div>
-                <el-date-picker
-                  v-model="time"
-                  align="right"
-                  type="month"
-                  placeholder="选择日期"
-                  :clearable="false"
-                  :editable="false"
-                  size="small"
-                  :picker-options="pickerOptions"
-                ></el-date-picker>
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="14">
-            <SelOrg
+        <div class="select__wrap">
+          <div>选择时间：</div>
+          <div>
+            <el-date-picker
+              v-model="time"
+              align="right"
+              type="month"
+              placeholder="选择日期"
+              :clearable="false"
+              :editable="false"
+              size="small"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </div>
+        </div>
+        <!-- <SelOrg
+            class="selorg-wrap"
+            style="width:60%"
               @selectArear="selectArear"
               @selectPlant="selectPlant"
               @selectUnit="selectUnit"
               :showDevice="false"
               :showSystem="false"
-            />
-          </el-col>
-          <el-col :span="4">
-            <BtnList
-              resetContent="导出"
-              btnStyle="textAlign:left;margin-left:32px"
-              @check="checkList"
-              @reset="onExport"
-            />
-          </el-col>
-        </el-row>
+        />-->
+        <div style="margin-left: 20px; display: flex; align-items: center">
+          <span>区域/项目：</span>
+          <cascade
+            @onMyCascader="onMyCascader"
+            :showAll="false"
+            :showSys="false"
+          ></cascade>
+        </div>
+        <BtnList
+          resetContent="导出"
+          btnStyle="textAlign:left;margin-left:32px"
+          @check="checkList"
+          @reset="onExport"
+        />
       </div>
       <div class="div__content-wrap">
         <layoutTable>
-          <span class="title" slot="title">{{this.y}} 年 {{this.m}} 月装置超限、超排统计表</span>
+          <span class="title" slot="title"
+            >{{ this.y }} 年 {{ this.m }} 月装置超限、超排统计表</span
+          >
           <div slot="table" v-if="tableShow" v-loading="loading">
-            <el-table border :data="tableData" style="width: 100%" :height="tableHeight">
-              <el-table-column align="center" prop="areaName" label="区域" width="80" fixed></el-table-column>
-              <el-table-column align="center" prop="plantName" label="项目" width="50"></el-table-column>
-              <el-table-column align="center" prop="unit" label="机组" width="50">
+            <el-table
+              border
+              :data="tableData"
+              style="width: 100%; min-height: 550px"
+              :height="tableHeight"
+            >
+              <el-table-column
+                align="center"
+                prop="areaName"
+                label="区域"
+                width="80"
+                fixed
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="plantName"
+                label="项目"
+                width="50"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="unit"
+                label="机组"
+                width="50"
+              >
                 <template slot-scope="scope">
-                  <span>{{"#"+scope.row.unit.charAt(0)}}</span>
+                  <span>{{ "#" + scope.row.unit.charAt(0) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column align="center" prop="type" label="类型" width="50"></el-table-column>
-              <el-table-column align="center" prop="idx" label="超限/超排指标" min-width="80"></el-table-column>
-              <el-table-column align="center" prop="val" label="超限/超排值(mg/Nm3)" min-width="110"></el-table-column>
-              <el-table-column align="center" prop="startTime" label="开始时间" min-width="105"></el-table-column>
-              <el-table-column align="center" prop="endTime" label="结束时间" min-width="105"></el-table-column>
-              <el-table-column align="center" prop="overHour" label="超限/超排时间(h)" min-width="80"></el-table-column>
+              <el-table-column
+                align="center"
+                prop="type"
+                label="类型"
+                width="50"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="idx"
+                label="超限/超排指标"
+                min-width="80"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="val"
+                label="超限/超排值(mg/Nm³)"
+                min-width="110"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="startTime"
+                label="开始时间"
+                min-width="105"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="endTime"
+                label="结束时间"
+                min-width="105"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="overHour"
+                label="超限/超排时间(h)"
+                min-width="80"
+              ></el-table-column>
             </el-table>
           </div>
         </layoutTable>
@@ -66,6 +121,7 @@
 </template>
 
 <script>
+import cascade from "@/components/selectOrg/index11.vue";
 import moment from "moment";
 import "moment/locale/zh-cn";
 import { get_emsOver } from "../../../api/report/superEmis";
@@ -74,6 +130,7 @@ import layoutTable from "../../../components/tableLayout/index";
 import { excel } from "@/api/common";
 moment.locale("zh-cn");
 export default {
+  name: "superEmis",
   props: {},
   data() {
     return {
@@ -84,19 +141,20 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
-        }
+        },
       },
       tableData: [],
       query: {
         y: moment(Date.now()).year(),
-        m: moment(Date.now()).month() + 1
+        m: moment(Date.now()).month() + 1,
       },
-      y:"",
-      m:""
+      y: "",
+      m: "",
     };
   },
   components: {
-    layoutTable
+    layoutTable,
+    cascade,
   },
   computed: {},
   created() {},
@@ -114,52 +172,78 @@ export default {
     time(value) {
       this.query.y = moment(value).year();
       this.query.m = moment(value).month() + 1;
-    }
+    },
   },
   methods: {
     checkList() {
-      if (!this.query.unit) {
-        return this.$message.error("请选择电厂");
+      if (this.$store.state.writeData.selectOptions.area) {
+        this.query.area = this.$store.state.writeData.selectOptions.area;
+        this.query.plant = this.$store.state.writeData.selectOptions.plant;
+      } else {
+        this.query.area =  null
+        this.query.plant =  null
       }
+      // if (!this.query.plant) {
+      //   return this.$message.error("请选择电厂");
+      // }
+      // if (!this.query.unit) {
+      //   return this.$message.error("请选择机组");
+      // }
       this.y = this.query.y;
       this.m = this.query.m;
       this.get_emsOver(this.query);
     },
     onExport() {
+      if (this.$store.state.writeData.selectOptions.plant) {
+        this.query.area = this.$store.state.writeData.selectOptions.area;
+        this.query.plant = this.$store.state.writeData.selectOptions.plant;
+      } else {
+        this.query.area =  null
+        this.query.plant = null
+      }
       // this.downloadFile("/datamonitor/emsOver/exportStat", this.query);
-      excel("/datamonitor/emsOver/exportStat", this.query).then(res => {
+      excel("/datamonitor/emsOver/exportStat", this.query).then((res) => {
         let data = res.data;
         let excelName = `${this.query.y}年${this.query.m}月 装置超限、超排统计表.xls`;
         this.excel(data, excelName);
       });
     },
-    selectArear(data) {
-      delete this.query.plant;
-      delete this.query.unit;
-      if (data == "all") {
-        this.query = _.omit(this.query, "area");
-      } else {
-        this.query.area = data.deptCode;
-      }
-    },
-    selectPlant(data) {
-      delete this.query.unit;
-      if (data == "all") {
-        this.query = _.omit(this.query, "plant");
-      } else {
-        this.query.plant = data.deptCode;
-      }
-    },
-    selectUnit(data) {
-      if (data == "all") {
-        this.query = _.omit(this.query, "unit");
-      } else {
-        this.query.unit = data.deviceCode;
-      }
+    // selectArear(data) {
+    //   delete this.query.plant;
+    //   delete this.query.unit;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "area");
+    //   } else {
+    //     this.query.area = data.deptCode;
+    //   }
+    // },
+    // selectPlant(data) {
+    //   delete this.query.unit;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "plant");
+    //   } else {
+    //     this.query.plant = data.deptCode;
+    //   }
+    // },
+    // selectUnit(data) {
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "unit");
+    //   } else {
+    //     this.query.unit = data.deviceCode;
+    //   }
+    // },
+    onMyCascader(data) {
+      // if (!data.area || !data.plant || !data.unit) {
+      //   return this.$message("请选择区域、电厂和机组");
+      // }
+      this.query.area = data.area;
+      this.query.plant = data.plant;
+      this.query.unit = data.unit;
+      this.checkList();
     },
     get_emsOver(query) {
       this.loading = true;
-      get_emsOver(query).then(res => {
+      get_emsOver(query).then((res) => {
         this.loading = false;
         let midData = res.data.data;
         let datas = [];
@@ -167,14 +251,14 @@ export default {
           item = {
             ...item,
             idx:
-              item.idx == "so2" ? "SO₂" : item.idx == "nox" ? "NOx" : item.idx
+              item.idx == "so2" ? "SO₂" : item.idx == "nox" ? "NOx" : item.idx,
           };
           datas.push(item);
         });
         this.tableData = datas;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -182,12 +266,16 @@ export default {
 .superEmis {
   height: 100%;
   .div__tool-wrap {
+    display: flex;
+    // justify-content: space-between;
+    flex-direction: row;
     padding: 20px 8px;
     .select__wrap {
       height: 42px;
       line-height: 42px;
+      max-width: 25%;
       display: table;
-      width: 100%;
+      // width: 100%;
       & > div:nth-child(1) {
         display: table-cell;
         width: 0.1%;

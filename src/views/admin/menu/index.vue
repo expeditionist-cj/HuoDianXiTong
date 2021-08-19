@@ -137,9 +137,8 @@
   import {addObj, delObj, fetchMenuTree, getObj, putObj} from "@/api/admin/menu";
   import {mapGetters} from "vuex";
   import iconList from "@/const/iconList";
-
   export default {
-    name: "menu",
+    // name: "menu",
     data() {
       return {
         iconList: iconList,

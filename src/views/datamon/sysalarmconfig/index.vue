@@ -14,10 +14,9 @@
                        @row-save="handleSave"
                        @row-del="rowDel">
                        <template slot="alarmColorForm"
-                      slot-scope="scope">
-                               <!-- <el-input type="color" v-model="scope.row.alarmColor" @change="changeColor(scope)" placeholder="请输入内容"></el-input> -->
+                        slot-scope="scope">
                                <el-color-picker v-model="scope.row.alarmColor" @change="changeColor(scope)"></el-color-picker>
-            </template>
+                        </template>
             </avue-crud>
         </basic-container>
     </div>

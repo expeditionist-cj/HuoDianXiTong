@@ -6,7 +6,7 @@ RouterPlugin.install = function (router, store) {
   this.$router = router
   this.$store = store
 
-  function objToform (obj) {
+  function objToform(obj) {
     let result = []
     Object.keys(obj).forEach(ele => {
       result.push(`${ele}=${obj[ele]}`)
@@ -31,7 +31,9 @@ RouterPlugin.install = function (router, store) {
     },
     // 处理路由
     getPath: function (params) {
-      let { src } = params
+      let {
+        src
+      } = params
       let result = src || '/'
       if (src.includes('http') || src.includes('https')) {
         result = `/myiframe/urlPath?${objToform(params)}`
@@ -88,14 +90,13 @@ RouterPlugin.install = function (router, store) {
         const icon = oMenu[propsDefault.icon]
 
         const children = oMenu[propsDefault.children]
-
         const meta = {
           keepAlive: Number(oMenu['keepAlive']) === 0
         }
         const isChild = children.length !== 0
         const oRouter = {
           path: path,
-          component (resolve) {
+          component(resolve) {
             // 判断是否为首路由
             if (first) {
               require(['../page/index'], resolve)
@@ -121,7 +122,9 @@ RouterPlugin.install = function (router, store) {
             if (first) {
               oMenu[propsDefault.path] = `${path}/index`
               return [{
-                component (resolve) { require([`../${component}.vue`], resolve) },
+                component(resolve) {
+                  require([`../${component}.vue`], resolve)
+                },
                 icon: icon,
                 name: name,
                 meta: meta,
@@ -134,7 +137,7 @@ RouterPlugin.install = function (router, store) {
           })()
         }
         aRouter.push(oRouter)
-      }
+      } 
       if (first) {
         if (!this.routerList.includes(aRouter[0][propsDefault.path])) {
           this.safe.$router.addRoutes(aRouter)

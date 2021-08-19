@@ -12,7 +12,7 @@ export const hasValue = (obj) => {
 // 判断当前月有哪些天数有数据
 export const hasDays = (data, att) => {
     data = JSON.parse(JSON.stringify(data));
-    let arry = [];
+    let arry = []; 
     data.pop();
     data.forEach(item => {
         let day = item[att];

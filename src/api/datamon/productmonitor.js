@@ -8,3 +8,17 @@ export function getCraftPage(query) {
     params: query
   })
 }
+export function getCraft(query) {
+  return request({
+    url: '/datamonitor/sysdevice/all',
+    method: 'get',
+    params: query
+  })
+}
+export function getProcessFlowChart(query) {
+  return request({
+    url: '/datamonitor/datamonitor/sysdevice/all/zhst/processFlowChart/selectProcessFlowChart',
+    method: 'get',
+    params: query
+  })
+}

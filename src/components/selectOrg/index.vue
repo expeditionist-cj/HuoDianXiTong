@@ -4,9 +4,15 @@
       <div class="grid-content bg-purple">
         <div>区域/公司：</div>
         <div>
-          <el-select size="small" v-model="areaValue" placeholder="请选择" @change="changeArea">
+          <el-select
+            size="small"
+            v-model="areaValue"
+            placeholder="请选择"
+            @change="changeArea"
+            :disabled="disableArea"
+          >
             <el-option
-              v-for="(item,idx) in area"
+              v-for="(item, idx) in area"
               :key="idx"
               :label="item.label"
               :value="item.value"
@@ -19,9 +25,14 @@
       <div class="grid-content bg-purple">
         <div>项目：</div>
         <div>
-          <el-select @change="changePlant" size="small" v-model="plantValue" placeholder="请选择">
+          <el-select
+            @change="changePlant"
+            size="small"
+            v-model="plantValue"
+            placeholder="请选择"
+          >
             <el-option
-              v-for="(item,idx) in plant"
+              v-for="(item, idx) in plant"
               :key="idx"
               :label="item.label"
               :value="item.value"
@@ -34,9 +45,15 @@
       <div class="grid-content bg-purple">
         <div>机组：</div>
         <div>
-          <el-select @change="changeUnit" size="small" v-model="unitValue" placeholder="请选择">
+          <el-select
+            @change="changeUnit"
+            size="small"
+            v-model="unitValue"
+            placeholder="请选择"
+          >
+            <!-- <el-option v-if="showGy" :label="'公用'" :value="null"></el-option> -->
             <el-option
-              v-for="(item,idx) in unit"
+              v-for="(item, idx) in unit"
               :key="idx"
               :label="item.label"
               :value="item.value"
@@ -49,9 +66,14 @@
       <div class="grid-content bg-purple">
         <div>装置：</div>
         <div>
-          <el-select @change="changeDevice" size="small" v-model="deviceValue" placeholder="请选择">
+          <el-select
+            @change="changeDevice"
+            size="small"
+            v-model="deviceValue"
+            placeholder="请选择"
+          >
             <el-option
-              v-for="(item,idx) in device"
+              v-for="(item, idx) in device"
               :key="idx"
               :label="item.label"
               :value="item.value"
@@ -64,9 +86,14 @@
       <div class="grid-content bg-purple">
         <div>系统：</div>
         <div>
-          <el-select @change="changeSystem" size="small" v-model="systemValue" placeholder="请选择">
+          <el-select
+            @change="changeSystem"
+            size="small"
+            v-model="systemValue"
+            placeholder="请选择"
+          >
             <el-option
-              v-for="(item,idx) in system"
+              v-for="(item, idx) in system"
               :key="idx"
               :label="item.label"
               :value="item.value"
@@ -94,34 +121,46 @@ export default {
     //   type: Boolean,
     //   default: false
     // },
+    disableArea: {
+      type: Boolean,
+      default: false,
+    },
+    showGy: {
+      type: Boolean,
+      default: false,
+    },
     showArea: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showSystem: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showPlant: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showUnit: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showDevice: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showAll: {
       type: Boolean,
-      default: true
+      default: true,
     },
-    showDeviceAll:{
-      type:Boolean,
-      default:true
-    }
+    showDeviceAll: {
+      type: Boolean,
+      default: true,
+    },
+    hasAuthority: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -131,21 +170,21 @@ export default {
       // 装置
       device: [
         // {
-        //   value: "all",
+        //   value: -1,
         //   label: "全部"
         // },
         {
           value: "tlsys_code",
-          label: "脱硫"
+          label: "脱硫",
         },
         {
           value: "txsys_code",
-          label: "脱硝"
+          label: "脱硝",
         },
         {
           value: "ccsys_code",
-          label: "除尘"
-        }
+          label: "除尘",
+        },
       ],
       system: [], //系统
       areaValue: "",
@@ -153,7 +192,7 @@ export default {
       unitValue: "",
       deviceValue: "",
       systemValue: "",
-      itemWidth: "width:20%"
+      itemWidth: "width:20%",
     };
   },
   components: {},
@@ -166,27 +205,30 @@ export default {
   mounted() {
     this.mathWidth();
     // 显示设备全部
-    // if(!this.showDeviceAll){
-    //   this.device.shift();
-    // }
+    if (!this.showDeviceAll && this.device[0].label == "全部") {
+      this.device.shift();
+    }
     // 0 无权限 1 有权限
-    getAreaAndPlant(1, 1).then(response => {
+    getAreaAndPlant(this.hasAuthority, 1).then((response) => {
       let {
         data,
-        data: { code, data: res }
+        data: { code, data: res },
       } = response;
       let arry = res.map((item, idx) => {
         return {
           value: toJSON(item),
-          label: item.name
+          label: item.name,
         };
       });
-      // if (this.showAll) {
-      //   arry.unshift({
-      //     label: "全部",
-      //     value: "all"
-      //   });
-      // }
+      if (!this.showAll) {
+        arry.unshift({
+          label: "全部区域",
+          value: JSON.stringify({
+            deptId: "1",
+            deptCode: "all",
+          }),
+        });
+      }
       this.area = arry;
     });
   },
@@ -209,21 +251,24 @@ export default {
       width = (100 / len).toFixed(6);
       this.itemWidth = `width:${width}%`;
     },
-    changeArea(value) {
+    changeArea(value) { 
       value = toObj(value);
-      let reset = value => {
+      let reset = (value) => {
         this.plantValue = "";
         this.unitValue = "";
         this.deviceValue = "";
         this.systemValue = "";
         this.$emit("selectArear", value);
       };
-      if (value == "all") {
+      if (value.deptCode == "all") {
         this.plant = [
           {
-            value: "all",
-            label: "全部"
-          }
+            value: JSON.stringify({
+              deptId: "1",
+              deptCode: "",
+            }),
+            label: "全部",
+          },
         ];
         reset(value);
         return false;
@@ -232,16 +277,16 @@ export default {
         reset(value);
         return false;
       }
-      getAreaAndPlant(1, value.deptId)
-        .then(response => {
+      getAreaAndPlant(this.hasAuthority, value.deptId)
+        .then((response) => {
           let {
             data,
-            data: { code, data: res }
+            data: { code, data: res },
           } = response;
           this.plant = res.map((item, idx) => {
             return {
               value: toJSON(item),
-              label: item.name
+              label: item.name,
             };
           });
         })
@@ -251,7 +296,7 @@ export default {
     },
     changePlant(value) {
       value = toObj(value);
-      let reset = value => {
+      let reset = (value) => {
         this.unitValue = "";
         this.deviceValue = "";
         this.systemValue = "";
@@ -261,8 +306,8 @@ export default {
         this.unit = [
           {
             value: "all",
-            label: "全部"
-          }
+            label: "全部",
+          },
         ];
         reset(value);
         return false;
@@ -272,30 +317,43 @@ export default {
         return false;
       }
       getUnit(value.deptId)
-        .then(response => {
+        .then((response) => {
           let {
             data,
-            data: { code, data: res }
+            data: { code, data: res },
           } = response;
           this.unit = res.map((item, idx) => {
             return {
               value: toJSON(item),
-              label: item.deviceName
+              label: item.deviceName,
             };
           });
+          if (this.showGy) {
+            this.unit.unshift({
+              value: null,
+              label: "公用",
+            });
+          }
         })
         .then(() => {
           reset(value);
         });
     },
     changeUnit(value) {
-      value = toObj(value);
+      if (!value) {
+        value = {
+          deviceCode: null,
+          deviceName: "公用",
+        };
+      } else {
+        value = toObj(value);
+      }
       this.deviceValue = "";
       this.systemValue = "";
       this.$emit("selectUnit", value);
     },
     changeDevice(value) {
-      let reset = value => {
+      let reset = (value) => {
         this.systemValue = "";
         this.$emit("selectDevice", value);
       };
@@ -303,8 +361,8 @@ export default {
         this.system = [
           {
             value: "all",
-            label: "全部"
-          }
+            label: "全部",
+          },
         ];
         reset(value);
         return false;
@@ -314,15 +372,15 @@ export default {
         return false;
       }
       checkDict(value)
-        .then(response => {
+        .then((response) => {
           let {
             data,
-            data: { code, data: res }
+            data: { code, data: res },
           } = response;
-          this.system = res.map(item => {
+          this.system = res.map((item) => {
             return {
               value: toJSON(item),
-              label: item.label
+              label: item.label,
             };
           });
         })
@@ -338,16 +396,13 @@ export default {
       this.plant = [];
       this.unit = [];
       this.system = [];
-      this.device = [];
       this.areaValue = "";
       this.plantValue = "";
       this.unitValue = "";
       this.deviceValue = "";
       this.systemValue = "";
     },
-    
-    
-  }
+  },
 };
 </script>
 
@@ -355,7 +410,6 @@ export default {
 .selectOrg {
   height: 42px;
   margin-left: -10px;
-
   .item {
     width: 20%;
     float: left;

@@ -21,10 +21,14 @@ const common = {
     theme: getStore({ name: 'theme' }) || '#409EFF',
     themeName: getStore({ name: 'themeName' }) || 'theme-white',
     lockPasswd: getStore({ name: 'lockPasswd' }) || '',
-    website: website
+    website: website,
+    basic_container:'padding:8px 10px'
   },
   actions: {},
   mutations: {
+    SET_BASIC_CONTAINER: (state,value)=>{
+      state.basic_container = value
+    },
     SET_SHADE: (state, active) => {
       state.isShade = active
     },

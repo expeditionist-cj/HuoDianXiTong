@@ -1,36 +1,52 @@
 <template>
   <div class="detailTable">
-    <table border="none" style="table-layout:fixed" class="detailTable__table">
+    <table border="none" style="table-layout: fixed" class="detailTable__table">
       <colgroup>
-            <col align="center" width="50%">
-            <col align="center" width="50%">
+        <col align="center" width="50%" />
+        <col align="center" width="50%" />
       </colgroup>
       <tr>
         <th colspan="2">脱硝设计指标</th>
       </tr>
       <tr>
-        <td>脱硝效率(%)</td>
-        <td class="ellipsis" :title="data.xefficiency">{{data.xefficiency| formatValue}}</td>
+        <td style="text-align:left;">脱硝效率(%)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xefficiency">
+          {{ data.xefficiency | formatValue }}
+        </td>
       </tr>
       <tr>
-        <td>入口NOx浓度(mg/Nm3)</td>
-        <td class="ellipsis" :title="data.xinputNox">{{data.xinputNox| formatValue}}</td>
+        <td style="text-align:left;">入口NOx浓度(mg/Nm3)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xinputNox">
+          {{ data.xinputNox | formatValue }}
+        </td>
       </tr>
       <tr>
-        <td>反应器设计入口烟气量（干基，6%烟气量）(Nm3/h)</td>
-        <td class="ellipsis" :title="data.xinputGas">{{data.xinputGas| formatValue}}</td>
+        <td style="text-align:left;">反应器设计入口烟气量（干基，6%烟气量）(Nm3/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xinputGas">
+          {{ data.xinputGas | formatValue }}
+        </td>
       </tr>
       <tr>
-        <td>装置电耗(KWh)</td>
-        <td class="ellipsis" :title="data.xelectricRate">{{data.xelectricRate| formatValue}}</td>
+        <td style="text-align:left;">装置电耗(KWh)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xelectricRate">
+          {{ data.xelectricRate | formatValue }}
+        </td>
       </tr>
       <tr>
-        <td>还原剂消耗量(t/h)</td>
-        <td class="ellipsis" :title="data.xreductantPower">{{data.xreductantPower| formatValue}}</td>
+        <td style="text-align:left;">还原剂消耗量(t/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xreductantPower">
+          {{
+            data.xreductantPower == "/"
+              ? "/"
+              : Number(data.xreductantPower).toFixed(2) | formatValue
+          }}
+        </td>
       </tr>
       <tr>
-        <td>蒸汽耗量(m3/h)</td>
-        <td class="ellipsis" :title="data.xwaterPower">{{data.xwaterPower| formatValue}}</td>
+        <td style="text-align:left;">蒸汽耗量(m3/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.xwaterPower">
+          {{ data.xwaterPower | formatValue }}
+        </td>
       </tr>
     </table>
   </div>
@@ -56,14 +72,14 @@ export default {
           xinputGas: "", //	脱硝入口烟气流量
           xelectricRate: "", //	脱硝装置电耗
           xreductantPower: "", //	脱硝还原剂消耗量
-          xwaterPower: "" //	脱硝蒸汽耗量
+          xwaterPower: "", //	脱硝蒸汽耗量
         };
-      }
+      },
     },
     titil: {
       type: String,
-      default: "脱硫设计指标"
-    }
+      default: "脱硫设计指标",
+    },
   },
   data() {
     return {};
@@ -73,7 +89,7 @@ export default {
   created() {},
   mounted() {},
   watch: {},
-  methods: {}
+  methods: {},
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="basic-container" :class="{'basic-container--block':block}">
+  <div class="basic-container" :style="$store.state.common.basic_container" :class="{'basic-container--block':block}">
     <el-card>
       <slot></slot>
     </el-card>
@@ -25,7 +25,7 @@ export default {
 
 <style lang="scss">
 .basic-container {
-  padding: 8px 10px;
+  // padding: 8px 10px;
   border-radius: 10px;
 
   // background:rgba(255,255,255,1);

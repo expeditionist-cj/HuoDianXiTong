@@ -34,16 +34,16 @@ export const tableOption = {
       width: 200
     },
 	  {
-      label: '吸收剂耗用率 (t/t)',
+      label: '吸收剂耗用率 (t/万kWh)',
       prop: 'absorbent',
       sortable:true,
-      width: 200
+      width: 220
     },
 	  {
-      label: '还原剂耗用率 (t/t)',
+      label: '还原剂耗用率 (t/万kWh)',
       prop: 'reductant',
       sortable:true,
-      width: 200
+      width: 220
     },
 	  {
       label: '统计方式',

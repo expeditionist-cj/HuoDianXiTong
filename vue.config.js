@@ -1,5 +1,5 @@
-// const url = 'http://192.168.59.7:9999';
-const url = "http://183.64.62.154:9999";
+const url = 'http://192.168.59.8:9999'; // 开发环境
+// const url = "http://183.64.62.154:9998";
 const urlXR = "http://192.168.1.142:9999";
 const env = process.env;
 const path = require('path')
@@ -26,7 +26,7 @@ module.exports = {
       .add('classlist-polyfill')
       .end()
 
-      
+
   },
   transpileDependencies: [
     'vue-echarts',
@@ -108,6 +108,14 @@ module.exports = {
           '^/job': '/job'
         },
       },
+
+      // '/hdtsindicator': {
+      //   target: "http://localhost:6001",
+      //   ws: true,
+      //   pathRewrite: {
+      //     '^/hdtsindicator': '/hdtsindicator'
+      //   },
+      // },
     }
   }
 }

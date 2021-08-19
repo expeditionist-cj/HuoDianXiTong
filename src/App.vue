@@ -24,4 +24,7 @@
     height: 100%;
     overflow: hidden;
   }
+  #app .sidebar-container {
+    background-color: transparent !important;
+  }
 </style>

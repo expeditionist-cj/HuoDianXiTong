@@ -30,3 +30,38 @@ export const excel = (url,query)=>{
     responseType: 'arraybuffer'
   })
 }
+// 导出excel
+export const excelPost = (url,query)=>{
+  return request({
+    url,
+    method: 'post',
+    data: query,
+    responseType: 'arraybuffer'
+  })
+}
+
+// 查询电厂数据状态
+export const getPlantDs = (query)=>{
+  return request({
+    url:"job/dataStatus/getPlantDs",
+    method: 'get',
+    params: query,
+  })
+}
+// 查询区域数据状态
+export const getAreaDs = (query)=>{
+  return request({
+    url:"job/dataStatus/getDs",
+    method: 'get',
+    params: query,
+  })
+}
+
+// 人工补偿
+export const runCpsByMan = (query)=>{
+  return request({
+    url:"job/dataStatus/runCpsByMan",
+    method: 'get',
+    params: query,
+  })
+}

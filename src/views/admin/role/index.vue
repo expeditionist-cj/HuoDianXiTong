@@ -23,7 +23,7 @@
                      icon="el-icon-edit">添加
           </el-button>
         </template>
-        <template slot="dsScopeForm" slot-scope="scope">
+        <template slot="dsScopeForm">
           <div v-if="form.dsType == 1">
             <el-tree class="filter-tree"
                      :data="dsScopeData"

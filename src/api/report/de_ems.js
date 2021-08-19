@@ -31,3 +31,11 @@ export const add_de_ems = (query) => {
         data: query
     })
 }
+// 保存所有
+export const update_de_all = (query) => {
+    return request({
+        url: '/datamonitor/desulphurizeExpendStatistics/batInsert',
+        method: 'post',
+        data: query
+    })
+}

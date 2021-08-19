@@ -2,59 +2,50 @@
   <div class="hdenergy">
     <basic-container>
       <div class="tool__wrap">
-        <el-row :gutter="10">
-          <el-col :span="18">
-            <SelOrg
-              :showSystem="false"
-              @selectArear="selectArear"
-              @selectPlant="selectPlant"
-              @selectUnit="selectUnit"
-              @selectDevice="selectDevice"
-            />
-          </el-col>
-          <el-col :span="5">
-            <div class="select__wrap">
-              <div>统计方式：</div>
-              <div>
-                <el-select  size="small" v-model="way" placeholder="请选择">
-                  <el-option
-                    v-for="(item,idx) in wayOptions "
-                    :key="idx"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="1">
-            <BtnList @check="checkList" :showRest="false" />
-          </el-col>
-        </el-row>
-        <el-row :gutter="10">
-          <el-col :span="18">
-            <div class="selectOrg clearfix">
-              <div class="item">
-                <div>
-                  <div>统计时长：</div>
-                  <div>
-                    <el-select size="small" v-model="time" placeholder="请选择">
-                      <el-option
-                        v-for="(item,idx) in timeOptions"
-                        :key="idx"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
+        <!-- <SelOrg
+          :showSystem="false"
+          @selectArear="selectArear"
+          @selectPlant="selectPlant"
+          @selectUnit="selectUnit"
+          @selectDevice="selectDevice"
+        />-->
+        <div style="margin-left:20px;display:flex;align-items:center;">
+          <div style="width: 80px;">区域/项目：</div>
+          <cascade @onMyCascader="onMyCascader" :showAll="showAll"></cascade>
+        </div>
+        <div style="margin-left:20px;display:flex;align-items:center;">
+          <div style="width: 80px;">计算方式：</div>
+          <div>
+            <el-select size="small" v-model="way" placeholder="请选择">
+              <el-option
+                v-for="(item,idx) in wayOptions "
+                :key="idx"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+        </div>
+
+        <div style="margin-left:20px;display:flex;align-items:center;">
+          <div style="width: 80px;">统计周期：</div>
+          <div>
+            <el-select size="small" v-model="time" placeholder="请选择">
+              <el-option
+                v-for="(item,idx) in timeOptions"
+                :key="idx"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+        </div>
+        <div style="margin-left:20px;">
+          <BtnList @check="checkList" :showRest="false" />
+        </div>
       </div>
       <avue-crud
-      v-if="way =='E'"
+        v-if="way =='E'"
         ref="crud"
         :page="page"
         :data="tableData"
@@ -78,7 +69,8 @@
 </template>
 
 <script>
-import SelOrg from "@/components/selectOrg/index";
+import cascade from "@/components/selectOrg/index11.vue";
+// import SelOrg from "@/components/selectOrg/index";
 import BtnList from "@/components/checkAndResetBtn/index";
 import {
   fetchList,
@@ -87,13 +79,14 @@ import {
   putObj,
   delObj
 } from "@/api/datamon/hdenergy";
-import { tableOption,tableOption_fdl } from "@/const/crud/datamon/hdenergy";
+import { tableOption, tableOption_fdl } from "@/const/crud/datamon/hdenergy";
 import { mapGetters } from "vuex";
 
 export default {
   name: "hdenergy",
   data() {
     return {
+      showAll: false,
       tableData: [],
       page: {
         total: 0, // 总页数
@@ -102,14 +95,14 @@ export default {
       },
       tableLoading: false,
       tableOption: tableOption,
-      tableOption_fdl:tableOption_fdl,
+      tableOption_fdl: tableOption_fdl,
       wayOptions: [
         {
-          label: "按减排统计",
+          label: "按减排计算",
           value: "E"
         },
         {
-          label: "按发电量统计",
+          label: "按发电量计算",
           value: "P"
         }
       ],
@@ -130,14 +123,26 @@ export default {
         }
       ],
       query: {
-        way:"W",
-        category:"E"
+        way: "W",
+        category: "E"
       }
     };
   },
+  mounted() {
+    // 根据登录用户角色，决定筛选条件中是否显示全部公司
+    this.identity = this.$store.state.writeData.identity;
+    if (
+      this.identity == "ROLE_ADMIN" ||
+      this.identity == "ROLE_Analysiser" ||
+      this.identity == "ROLE_Supervisor"
+    ) {
+      this.showAll = true;
+    }
+  },
   components: {
-    SelOrg,
-    BtnList
+    // SelOrg,
+    BtnList,
+    cascade
   },
   computed: {
     ...mapGetters(["permissions"]),
@@ -158,18 +163,18 @@ export default {
       };
     }
   },
-  watch:{
+  watch: {
     // 统计时长
-    time(value){
-      this.query.way = value
+    time(value) {
+      this.query.way = value;
     },
     // 统计方式
-    way(value){
-      this.query.category = value
+    way(value) {
+      this.query.category = value;
     }
   },
   methods: {
-    getList(page, params=this.query) {
+    getList(page, params = this.query) {
       this.tableLoading = true;
       fetchList(
         Object.assign(
@@ -186,61 +191,70 @@ export default {
         this.page.currentPage = response.data.data.current;
       });
     },
-        // 点击查询
+    // 点击查询
     checkList() {
-      this.page.currentPage = 1;
-      console.log(this.query);
+      this.page.currentPage = 1; 
       this.getList(this.page, this.query);
     },
+    onMyCascader(data) {
+      if (data.area == "all") {
+        delete this.query.regionCode;
+      } else {
+        this.query.regionCode = data.area;
+      }
+      this.query.projectCode = data.plant;
+      this.query.unitCode = data.unit;
+      this.query.deviceCode = data.sys;
+      this.checkList();
+    }
     // 区域
-    selectArear(data) {
-      delete this.query.projectCode;
-      delete this.query.unitCode;
-      delete this.query.deviceCode
-      if (data == "all") {
-        this.query = _.omit(this.query, "regionCode");
-      } else {
-        this.query.regionCode = data.deptCode;
-      }
-    },
-    // 电厂
-    selectPlant(data) {
-      delete this.query.unitCode;
-      delete this.query.deviceCode
-      if (data == "all") {
-        this.query = _.omit(this.query, "projectCode");
-      } else {
-        this.query.projectCode = data.deptCode;
-      }
-    },
-    // 机组
-    selectUnit(data) {
-       delete this.query.deviceCode
-      if (data == "all") {
-        this.query = _.omit(this.query, "unitCode");
-      } else {
-        this.query.unitCode = data.deviceCode;
-      }
-    },
-    // 装置
-    selectDevice(data) {
-      switch (data) {
-        case "all":
-          this.query = _.omit(this.query, "deviceCode");
-          break;
-        case "tlsys_code":
-          this.query.deviceCode = "S";
-          break;
-        case "txsys_code":
-          this.query.deviceCode = "N";
-          break;
-        default:
-          this.query.deviceCode = "D";
-          break;
-      }
-    },
-  },
-  mounted() {}
+    // selectArear(data) {
+    //   delete this.query.projectCode;
+    //   delete this.query.unitCode;
+    //   delete this.query.deviceCode;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "regionCode");
+    //   } else {
+    //     this.query.regionCode = data.deptCode;
+    //   }
+    // },
+    // // 电厂
+    // selectPlant(data) {
+    //   delete this.query.unitCode;
+    //   delete this.query.deviceCode;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "projectCode");
+    //   } else {
+    //     this.query.projectCode = data.deptCode;
+    //   }
+    // },
+    // // 机组
+    // selectUnit(data) {
+    //   delete this.query.deviceCode;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "unitCode");
+    //   } else {
+    //     this.query.unitCode = data.deviceCode;
+    //   }
+    // },
+    // // 装置
+    // selectDevice(data) {
+    //   switch (data) {
+    //     case "all":
+    //       this.query = _.omit(this.query, "deviceCode");
+    //       break;
+    //     case "tlsys_code":
+    //       this.query.deviceCode = "S";
+    //       break;
+    //     case "txsys_code":
+    //       this.query.deviceCode = "N";
+    //       break;
+    //     default:
+    //       this.query.deviceCode = "D";
+    //       break;
+    //   }
+    // }
+  }, 
 };
 </script>
 
@@ -248,11 +262,13 @@ export default {
 .hdenergy {
   .tool__wrap {
     padding: 0 8px;
+    display: flex;
+    align-items: center;
     .select__wrap {
       height: 42px;
       line-height: 42px;
       display: table;
-      width: 100%;
+      // width: 30%;
       padding-left: 10%;
       & > div:nth-child(1) {
         display: table-cell;

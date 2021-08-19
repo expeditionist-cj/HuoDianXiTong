@@ -1,28 +1,30 @@
 <template>
   <div class="assitantOrg">
     <Card style="margin-bottom:16px;min-height:84px;padding:20px 10px">
-      <el-row>
-        <el-col :span="16">
-          <SelOrg
+      <!-- <SelOrg
             :showSystem="false"
             :showDevice="false"
             :showAll="false"
             @selectArear="selectArear"
             @selectPlant="selectPlant"
             @selectUnit="selectUnit"
-          />
-        </el-col>
-        <el-col :span="2" :offset="6">
-          <div class="btn-wrap">
-            <el-button type="primary" @click="onOk" size="small">查询</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      />-->
+      <div style="margin-left:20px;display:flex;align-items:center;">
+        <div style="margin-left:20px;display:flex;align-items:center;">
+        <span>区域/项目：</span>
+        <cascade @onMyCascader="onMyCascader" :showAll="false" :showSys="false"></cascade>
+      </div>
+      <div style="margin-left:20px;">
+        <el-button type="primary" @click="onOk" size="small">查询</el-button>
+      </div>
+      </div>
+      
     </Card>
   </div>
 </template>
 
 <script>
+import cascade from "@/components/selectOrg/index11.vue";
 import Card from "@/components/card/index";
 
 export default {
@@ -36,27 +38,39 @@ export default {
       title: {}
     };
   },
-  components: { Card },
+  components: { Card,cascade },
   computed: {},
   created() {},
   mounted() {},
   watch: {},
   methods: {
-    selectArear(data) {
-      delete this.query.plantCode;
-      delete this.cnName.plant;
-      this.query.regionCode = data.deptCode;
-      this.cnName.area = data.name;
-    },
-    selectPlant(data) {
-      delete this.query.unitCode;
-      delete this.cnName.unit;
-      this.query.plantCode = data.deptCode;
-      this.cnName.plant = data.name;
-    },
-    selectUnit(data) {
-      this.query.unitCode = data.deviceCode;
-      this.cnName.unit = data.deviceName;
+    // selectArear(data) {
+    //   delete this.query.plantCode;
+    //   delete this.cnName.plant;
+    //   this.query.regionCode = data.deptCode;
+    //   this.cnName.area = data.name;
+    // },
+    // selectPlant(data) {
+    //   delete this.query.unitCode;
+    //   delete this.cnName.unit;
+    //   this.query.plantCode = data.deptCode;
+    //   this.cnName.plant = data.name;
+    // },
+    // selectUnit(data) {
+    //   this.query.unitCode = data.deviceCode;
+    //   this.cnName.unit = data.deviceName;
+    // },
+    onMyCascader(data) {
+      if (!data.area || !data.plant || !data.unit) {
+        return this.$message("请选择区域、电厂和机组");
+      }
+      this.query.regionCode = data.area;
+      this.query.plantCode = data.plant;
+      this.query.unitCode = data.unit;
+      this.cnName.area = data.name.split('/')[0]
+      this.cnName.plant = data.name.split('/')[1]
+      this.cnName.unit = data.name.split('/')[2]
+      this.onOk()
     },
     onOk() {
       if (!this.query.unitCode) {
@@ -74,5 +88,4 @@ export default {
     margin-top: 8px;
   }
 }
-
 </style>

@@ -2,35 +2,33 @@
   <div class="hdelectricity">
     <basic-container>
       <div class="tool__wrap">
-        <el-row :gutter="10">
-          <el-col :span="18">
-            <SelOrg
+        <!-- <SelOrg
               :showSystem="false"
               @selectArear="selectArear"
               @selectPlant="selectPlant"
               @selectUnit="selectUnit"
               @selectDevice="selectDevice"
-            />
-          </el-col>
-          <el-col :span="5">
-            <div class="select__wrap">
-              <div>统计时长：</div>
-              <div>
-                <el-select size="small" v-model="time" placeholder="请选择">
-                  <el-option
-                    v-for="(item,idx) in timeOptions"
-                    :key="idx"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="1">
-            <BtnList :showRest="false" @check="checkList" />
-          </el-col>
-        </el-row>
+        />-->
+        <div style="margin-left:20px;display:flex;align-items:center;">
+          <div style="width: 80px;">区域/项目：</div>
+          <cascade @onMyCascader="onMyCascader" :showAll="showAll"></cascade>
+        </div>
+        <div style="margin-left:20px;display:flex;align-items:center;">
+          <div style="width: 80px;">统计周期：</div>
+          <div>
+            <el-select size="small" v-model="time" placeholder="请选择">
+              <el-option
+                v-for="(item,idx) in timeOptions"
+                :key="idx"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+        </div>
+        <div style="margin-left:20px">
+          <BtnList :showRest="false" @check="checkList" />
+        </div>
       </div>
       <avue-crud
         ref="crud"
@@ -46,7 +44,8 @@
 </template>
 
 <script>
-import SelOrg from "@/components/selectOrg/index";
+import cascade from "@/components/selectOrg/index11.vue";
+// import SelOrg from "@/components/selectOrg/index";
 import BtnList from "@/components/checkAndResetBtn/index";
 import {
   fetchList,
@@ -62,11 +61,12 @@ export default {
   name: "hdelectricity",
   data() {
     return {
+      showAll: false,
       tableData: [],
       page: {
         total: 0, // 总页数
         currentPage: 1, // 当前页数
-        pageSize: 20, // 每页显示多少条
+        pageSize: 20 // 每页显示多少条
       },
       tableLoading: false,
       tableOption: tableOption,
@@ -93,8 +93,9 @@ export default {
     };
   },
   components: {
-    SelOrg,
-    BtnList
+    // SelOrg,
+    BtnList,
+    cascade
   },
   computed: {
     ...mapGetters(["permissions"]),
@@ -117,9 +118,18 @@ export default {
   },
   mounted() {
     // this.getList(this.page, { });
+    // 根据登录用户角色，决定筛选条件中是否显示全部公司
+    this.identity = this.$store.state.writeData.identity;
+    if (
+      this.identity == "ROLE_ADMIN" ||
+      this.identity == "ROLE_Analysiser" ||
+      this.identity == "ROLE_Supervisor"
+    ) {
+      this.showAll = true;
+    }
   },
   methods: {
-    getList(page, params={...this.query, Way: this.time }) {
+    getList(page, params = { ...this.query, Way: this.time }) {
       this.tableLoading = true;
       fetchList(
         Object.assign(
@@ -135,8 +145,8 @@ export default {
           data: { code, data: res }
         } = response;
         this.tableData = res.records.map(item => {
-          item.ELE_CAPACITY =  item.ELE_CAPACITY * 1;
-          item.GEN_CAPACITY =  item.GEN_CAPACITY * 1;
+          item.ELE_CAPACITY = item.ELE_CAPACITY * 1;
+          item.GEN_CAPACITY = item.GEN_CAPACITY * 1;
           return item;
         });
         this.page.total = res.total;
@@ -147,50 +157,68 @@ export default {
     },
     // 点击查询
     checkList() {
+      if (this.$store.state.writeData.selectOptions.plant) {
+        this.query.regionCode = this.$store.state.writeData.selectOptions.area;
+        this.query.projectCode = this.$store.state.writeData.selectOptions.plant; 
+      }
       this.page.currentPage = 1;
       this.getList(this.page, { ...this.query, Way: this.time });
     },
-    selectArear(data) {
-      this.query = {};
-      if (data == "all") {
-        this.query = _.omit(this.query, "regionCode");
+    onMyCascader(data) {
+      // if (!data.unit) {
+      //   return this.$message("请选择机组");
+      // }
+      if (data.area == "all") {
+        delete this.query.regionCode;
       } else {
-        this.query.regionCode = data.deptCode;
-      };
-    },
-    selectPlant(data) {
-      delete this.query.unitCode;
-      delete this.query.deviceCode;
-      if (data == "all") {
-        this.query = _.omit(this.query, "projectCode");
-      } else {
-        this.query.projectCode = data.deptCode;
-      };
-    },
-    selectUnit(data) {
-      delete this.query.deviceCode;
-      if (data == "all") {
-        this.query = _.omit(this.query, "unitCode");
-      } else {
-        this.query.unitCode = data.deviceCode;
+        this.query.regionCode = data.area;
       }
-    },
-    selectDevice(data) {
-      switch (data) {
-        case "all":
-          this.query = _.omit(this.query, "deviceCode");
-          break;
-        case "tlsys_code":
-          this.query.deviceCode = "S";
-          break;
-        case "txsys_code":
-          this.query.deviceCode = "N";
-          break;
-        default:
-          this.query.deviceCode = "D";
-          break;
-      }
+      this.query.projectCode = data.plant;
+      this.query.unitCode = data.unit;
+      this.query.deviceCode = data.sys;
+      this.checkList();
     }
+    // selectArear(data) {
+    //   this.query = {};
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "regionCode");
+    //   } else {
+    //     this.query.regionCode = data.deptCode;
+    //   };
+    // },
+    // selectPlant(data) {
+    //   delete this.query.unitCode;
+    //   delete this.query.deviceCode;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "projectCode");
+    //   } else {
+    //     this.query.projectCode = data.deptCode;
+    //   };
+    // },
+    // selectUnit(data) {
+    //   delete this.query.deviceCode;
+    //   if (data == "all") {
+    //     this.query = _.omit(this.query, "unitCode");
+    //   } else {
+    //     this.query.unitCode = data.deviceCode;
+    //   }
+    // },
+    // selectDevice(data) {
+    //   switch (data) {
+    //     case "all":
+    //       this.query = _.omit(this.query, "deviceCode");
+    //       break;
+    //     case "tlsys_code":
+    //       this.query.deviceCode = "S";
+    //       break;
+    //     case "txsys_code":
+    //       this.query.deviceCode = "N";
+    //       break;
+    //     default:
+    //       this.query.deviceCode = "D";
+    //       break;
+    //   }
+    // }
   }
 };
 </script>
@@ -199,6 +227,8 @@ export default {
 .hdelectricity {
   .tool__wrap {
     padding: 0 8px;
+    display: flex;
+    align-items: center;
     .select__wrap {
       height: 42px;
       line-height: 42px;

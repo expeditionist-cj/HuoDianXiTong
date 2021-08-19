@@ -18,11 +18,11 @@
       <div class="runstate__foot">
         <div class="runstate__foot-cicle">
           <span></span>
-          <span>启动</span>
+          <span>正常运行</span>
         </div>
         <div class="runstate__foot-cicle">
           <span style="background:rgba(126,208,107,1)"></span>
-          <span>停止</span>
+          <span>停备或检修</span>
         </div>
       </div>
     </Card>
@@ -36,6 +36,7 @@ import PlantDisplay from "./plantDisplay";
 import {runStateData} from "./config";
 let {data:res} = runStateData;
 export default {
+  name: "runstate",
   props: {},
   data() {
     return {

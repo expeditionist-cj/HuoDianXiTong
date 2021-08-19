@@ -44,3 +44,12 @@ export function getDetails (obj) {
     method: 'get'
   })
 }
+
+// // 获取用户权限
+export function getAuthority (query) {
+  return request({
+      url: '/datamonitor/emsOver/getUrs',
+      method: 'get',
+      params: query
+  })
+}

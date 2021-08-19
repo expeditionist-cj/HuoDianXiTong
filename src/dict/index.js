@@ -23,11 +23,11 @@ export const areaMapCons = {
 }
 // 首页基础数据 映射
 export const baseMap = {
-    "load": "总负荷 (WM)",
+    "load": "总负荷 (MW)",
     "currentGeneration": "当日发电量 (万KWh)",
     "startNum": "运行机组 (台)",
     "stopNum": "停运机组 (台)",
-    "capacity": "装机容量 (WM)",
+    "capacity": "装机容量 (MW)",
 }
 // 首页地图映射表
 export const map_map =
@@ -43,24 +43,23 @@ export const map_map =
     "河北": "河南",
 }
 // 脱硫脱硝装置发电量统计表
-export const power_GNT = {
-    n_run_rate: "脱硝合格投运率(%)",
+export const power_GNT = {  
+    use_time: "利用小时(h)",
     gen_power: "发电量(万KWh)",
     net_power: "上网电量(万KWh)",
     run_time: "主机运行小时数(h)",
-    load_rate: "主机负荷率(%)",
-    use_time: "利用小时(h)",
     s_run_time: "脱硫运行小时数(h)",
     n_run_time: "脱硝运行小时数(h)",
     s_run_rate: "脱硫合格投运率(%)",
-    
+    n_run_rate: "脱硝合格投运率(%)",
+    load_rate: "主机负荷率(%)",
     // day: "日期"
 }
 // 脱硫耗用统计表
 export const DE_EMS_LS = {
     '采购量': {
         prop: "limestone_powder_procure",
-        label: "采购量", 
+        label: "采购量",
         width: math_clm_width("采购量111 ")
     },
     '库存量': {
@@ -204,7 +203,7 @@ export const DE_EMS_SG = {
         width: math_clm_width("#1石膏产量 ")
     },
     '石膏总产量': {
-        prop: "sum_gypsum_output",
+        prop: "gypsum_output",
         label: '石膏产量',
         width: math_clm_width("#1石膏产量 ")
     },
@@ -215,13 +214,23 @@ export const DE_EMS_SG = {
     }
 }
 export const DE_EMS_HQL = {
-    '耗汽量': {
+    '耗气量': {
         prop: "air_consumption",
         label: '吨/万KWh',
         width: math_clm_width("吨/万KWh ")
     },
-    '耗汽率': {
+    '耗气率': {
         prop: "air_consumption_rate",
+        label: '耗气率',
+        width: math_clm_width("吨/万KWh ")
+    },
+    '耗汽量': {
+        prop: "steam_comsumption",
+        label: '吨/万KWh',
+        width: math_clm_width("吨/万KWh ")
+    },
+    '耗汽率': {
+        prop: "steam_comsumption_rate",
         label: '耗汽率',
         width: math_clm_width("吨/万KWh ")
     }
@@ -230,20 +239,20 @@ export const DE_EMS_HQL = {
 export const NX_EMS_YA = {
     '采购量': {
         prop: "ya_cg",
-        label:'采购量',
-        unit:'吨',
+        label: '采购量',
+        unit: '吨',
         width: math_clm_width("采购量111 ")
     },
     '耗量': {
         prop: "_ya_hl",
-        label:'耗量',
-        unit:'吨',
+        label: '耗量',
+        unit: '吨',
         width: math_clm_width("库存量111 ")
     },
     '库存量': {
         prop: "ya_kc",
         label: "库存量",
-        unit:'吨', 
+        unit: '吨',
         width: math_clm_width("库存量111 ")
     },
     '纯度>99.6%': {
@@ -268,13 +277,13 @@ export const NX_EMS_YA = {
 export const NX_EMS_NS = {
     '采购量': {
         prop: "ns_cg",
-        label:'采购量',
+        label: '采购量',
         label: "吨",
         width: math_clm_width("采购量111 ")
     },
     '耗量': {
         prop: "_ns_hl",
-        label:'耗量',
+        label: '耗量',
         label: "吨",
         width: math_clm_width("库存量111 ")
     },
@@ -439,17 +448,17 @@ export const DE_GAS_ORIGIN = {
     'mg/Nm³': {
         prop: "in_so2_rv",
         label: "mg/Nm³",
-        width: math_clm_width("mg/Nm³")
+        width: math_clm_width("实测(mg/Nm³)")
     },
     '折算mg/Nm³': {
         prop: "in_so2_cv",
         label: '折算mg/Nm³',
-        width: math_clm_width("FGDSO2产生量")
+        width: math_clm_width("折算(mg/Nm³)")
     },
     't/d': {
         prop: "in_so2_mnt",
         label: 't/d',
-        width: math_clm_width("t/dasd")
+        width: math_clm_width("产生(t/d)")
     },
     '标态流量': {
         prop: "in_smk_mnt",
@@ -472,17 +481,17 @@ export const DE_GAS_OVER = {
     'mg/Nm³': {
         prop: "out_so2_rv",
         label: "mg/Nm³",
-        width: math_clm_width("mg/Nm³")
+        width: math_clm_width("实测浓度(mg/Nm³)")
     },
     '折算mg/Nm³': {
         prop: "out_so2_cv",
         label: '折算mg/Nm³',
-        width: math_clm_width("FGDSO2产生量")
+        width: math_clm_width("折算浓度(mg/Nm³)")
     },
     't/d': {
         prop: "out_so2_mnt",
         label: 't/d',
-        width: math_clm_width("t/dasd")
+        width: math_clm_width("产生量(t/d)")
     },
     '标态流量': {
         prop: "out_smk_mnt",
@@ -510,17 +519,17 @@ export const NX_GAS_ORIGIN = {
     'mg/Nm³': {
         prop: "inNoxRv",
         label: "mg/Nm³",
-        width: math_clm_width("mg/Nm³")
+        width: math_clm_width("实测(mg/Nm³)")
     },
     '折算mg/Nm³': {
         prop: "inNoxCv",
         label: '折算mg/m³',
-        width: math_clm_width("FGDSO2产生量")
+        width: math_clm_width("折算浓度(mg/Nm³)")
     },
     't/d': {
         prop: "inNoxMnt",
         label: 't/d',
-        width: math_clm_width("t/dasd")
+        width: math_clm_width("产生(t/d)")
     },
     '标态流量': {
         prop: "inSmkMnt",
@@ -544,17 +553,17 @@ export const NX_GAS_OVER = {
     'mg/Nm³': {
         prop: "outNoxRv",
         label: "mg/Nm³",
-        width: math_clm_width("mg/Nm³")
+        width: math_clm_width("实测浓度(mg/Nm³)")
     },
     '折算mg/Nm³': {
         prop: "outNoxCv",
         label: '折算mg/Nm³',
-        width: math_clm_width("FGDSO2产生量")
+        width: math_clm_width("折算浓度(mg/Nm³)")
     },
     't/d': {
         prop: "outNoxMnt",
         label: 't/d',
-        width: math_clm_width("t/dasd")
+        width: math_clm_width("t/d")
     },
     '标态流量': {
         prop: "outSmkMnt",
@@ -589,15 +598,325 @@ export const NOX = {
     width: math_clm_width("排口nox浓")
 };
 export const a = {
-    nh3:"氨氮",
+    nh3: "氨氮",
 
 }
 // 智能助手模型对应的modelId
 export const modelId = {
-    "供浆智能优化":1,
-    "脱水智能优化":2,
-    "烟气流量智能分析":3,
-    "吸收循环智能优化":4,
-    "出口智能预测":5,
-    "装置电耗智能分析":6
+    "供浆智能优化": 1,
+    "脱水智能优化": 2,
+    "烟气流量智能分析": 3,
+    "吸收循环智能优化": 4,
+    "出口智能预测": 5,
+    "装置电耗智能分析": 6
+}
+
+// 脱硫计划指标
+export const DE_PLAN_IDX = {
+    '计划发电量': {
+        prop: "plan_power",
+        width: math_clm_width("计划发电量1 ")
+    },
+    '计划上网电量': {
+        prop: "plan_net_power",
+        width: math_clm_width("计划上网电量1 ")
+    },
+    '计划负荷率': {
+        prop: "plan_load_rate",
+        label: '纯度',
+        width: math_clm_width("计划负荷率1 ")
+    },
+    '装置运行时间': {
+        prop: "run_time",
+        width: math_clm_width("装置运行时间1 ")
+    },
+    '入口SO₂浓度': {
+        prop: "in_so2",
+        width: math_clm_width("入口SO₂浓度1 ")
+    },
+    't/万KWh': {
+        prop: "xsj_rate",
+        width: math_clm_width("t/万KWh ")
+    },
+    't': {
+        prop: "xsj",
+        width: math_clm_width("t/万KWh ")
+    },
+    '装置率': {
+        prop: "hd_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '装置': {
+        prop: "hd",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '分摊率': {
+        prop: "ft_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '分摊': {
+        prop: "ft",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '合计率': {
+        prop: "total_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '合计': {
+        prop: "total",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '计划率': {
+        prop: "water_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '计划': {
+        prop: "water",
+        width: math_clm_width("吨/万KWh ")
+    }
+}
+
+// 脱硝计划指标
+export const NX_PLAN_IDX = {
+    '计划发电量': {
+        prop: "plan_power",
+        width: math_clm_width("计划发电量1 ")
+    },
+    '计划上网电量': {
+        prop: "plan_net_power",
+        width: math_clm_width("计划上网电量1 ")
+    },
+    '计划负荷率': {
+        prop: "plan_load_rate",
+        label: '纯度',
+        width: math_clm_width("计划负荷率1 ")
+    },
+    '脱硫运行时间': {
+        prop: "run_time",
+        width: math_clm_width("装置运行时间1 ")
+    },
+    '入口NOx浓度': {
+        prop: "in_nox",
+        width: math_clm_width("入口SO₂浓度1 ")
+    },
+    't/万KWh': {
+        prop: "xsj_rate",
+        width: math_clm_width("t/万KWh ")
+    },
+    't': {
+        prop: "xsj",
+        width: math_clm_width("t/万KWh ")
+    },
+    '计划率': {
+        prop: "hd_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '计划': {
+        prop: "hd",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '分摊率': {
+        prop: "ft_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '分摊': {
+        prop: "ft",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '合计率': {
+        prop: "total_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '合计': {
+        prop: "total",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '蒸汽率': {
+        prop: "gas_rate",
+        width: math_clm_width("吨/万KWh ")
+    },
+    '蒸汽': {
+        prop: "gas",
+        width: math_clm_width("吨/万KWh ")
+    }
+}
+// 除尘计划指标
+export const DUST_PLANT = {
+    '计划发电量': {
+        prop: "planGeneration",
+        width: math_clm_width("计划发电量")
+    },
+    '计划上网电量': {
+        prop: "planElectricityConsumption",
+        width: math_clm_width("计划上网电量")
+    },
+    '计划负荷率': {
+        prop: "planLoadRate",
+        label: '纯度',
+        width: math_clm_width("计划负荷率")
+    },
+    '脱硫运行时间': {
+        prop: "runTime",
+        width: math_clm_width("脱硫运行时1")
+    },
+    '入口NOx浓度': {
+        prop: "inletConsistency", // 入口烟气浓度
+        width: math_clm_width("入口NOx浓")
+    },
+    '吨/万KWh': {
+        prop: "absorbentConsumptionRate",
+        width: math_clm_width("12345")
+    },
+    '吨': {
+        prop: "absorbentConsumption",
+        width: math_clm_width("1234")
+    },
+    '计划万KWh': {
+        prop: "planConsumePower",
+        width: math_clm_width("万KWh")
+    },
+    '计划%': {
+        prop: "planConsumePowerRate",
+        width: math_clm_width("1234")
+    },
+    '分摊KWh': {
+        prop: "shareConsumePower",
+        width: math_clm_width("万KWh ")
+    },
+    '分摊%': {
+        prop: "shareConsumePowerRate",
+        width: math_clm_width("1234")
+    },
+    '合计%': {
+        prop: "sumConsumePowerRate",
+        width: math_clm_width("1234")
+    },
+    '合计万KWh': {
+        prop: "sumConsumePower",
+        width: math_clm_width("万KWh ")
+    },
+    '蒸汽吨': {
+        prop: "steam",
+        width: math_clm_width("1234")
+    },
+    '蒸汽万KWh': {
+        prop: "steamRate",
+        width: math_clm_width("t/万KWh")
+    }
+}
+
+//汇总表--脱硫月度表
+export const DE_SUMMARY = {
+    '主机发电量': {
+        prop: "",
+        width: math_clm_width("主机发电量")
+    },
+    '负荷率': {
+        prop: "",
+        width: math_clm_width("负荷率")
+    },
+    '主机上网电量': {
+        prop: "",
+        width: math_clm_width("主机上网电量")
+    },
+    '机组运行时间': {
+        prop: "",
+        width: math_clm_width("机组运行时间")
+    },
+    '脱硫超排（超限）时间': {
+        prop: "",
+        width: math_clm_width("脱硫超排（超限）时间")
+    },
+    '合格投运率': {
+        prop: "",
+        width: math_clm_width("合格投运率")
+    },
+    '入口SO2浓度': {
+        prop: "",
+        width: math_clm_width("入口SO2浓度")
+    },
+    '出口SO2浓度': {
+        prop: "",
+        width: math_clm_width("出口SO2浓度")
+    },
+    '脱硫效率': {
+        prop: "",
+        width: math_clm_width("脱硫效率")
+    },
+    '标态流量': {
+        prop: "",
+        width: math_clm_width("标态流量")
+    },
+    '在线产生SO2量': {
+        prop: "",
+        width: math_clm_width("在线产生SO2量")
+    },
+    '在线排放SO2量': {
+        prop: "",
+        width: math_clm_width("在线排放SO2量")
+    },
+    '装置耗电量': {
+        prop: "",
+        width: math_clm_width("装置耗电量")
+    },
+}
+
+//汇总表--脱硝月度表
+export const NX_SUMMARY = {
+    '主机发电量': {
+        prop: "",
+        width: math_clm_width("主机发电量")
+    },
+    '负荷率': {
+        prop: "",
+        width: math_clm_width("负荷率")
+    },
+    '主机上网电量': {
+        prop: "",
+        width: math_clm_width("主机上网电量")
+    },
+    '机组运行时间': {
+        prop: "",
+        width: math_clm_width("机组运行时间")
+    },
+    '脱硝超排（超限）时间': {
+        prop: "",
+        width: math_clm_width("脱硝超排（超限）时间")
+    },
+    '合格投运率': {
+        prop: "",
+        width: math_clm_width("合格投运率")
+    },
+    '入口NOx浓度': {
+        prop: "",
+        width: math_clm_width("入口NOx浓度")
+    },
+    '出口NOx浓度': {
+        prop: "",
+        width: math_clm_width("出口NOx浓度")
+    },
+    '脱硝效率': {
+        prop: "",
+        width: math_clm_width("脱硝效率")
+    },
+    '脱硫出口NOx浓度': {
+        prop: "",
+        width: math_clm_width("脱硫出口NOx浓度")
+    },
+    '脱硫出口NOx效率': {
+        prop: "",
+        width: math_clm_width("脱硫出口NOx效率")
+    },
+    '标态流量': {
+        prop: "",
+        width: math_clm_width("标态流量")
+    },
+    '在线产生NOx量': {
+        prop: "",
+        width: math_clm_width("在线产生NOx量")
+    },
+    '在线排放NOx量': {
+        prop: "",
+        width: math_clm_width("在线排放NOx量")
+    }
 }

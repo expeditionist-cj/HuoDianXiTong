@@ -25,8 +25,9 @@ export const rd_clm = (unitList, data) => {
         label: '日期',
         prop: 'day',
         fixed: true,
-        width: 120
+        width: 120,
+        
 
-    })
+    }) 
     return arr
 }

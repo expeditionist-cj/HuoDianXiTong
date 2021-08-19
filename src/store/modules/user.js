@@ -1,9 +1,9 @@
-import {getStore, setStore} from '@/util/store'
-import {isURL} from '@/util/validate'
-import {getUserInfo, loginByMobile, loginBySocial, loginByUsername, logout, refreshToken} from '@/api/login'
-import {deepClone, encryption} from '@/util/util'
+import { getStore, setStore } from '@/util/store'
+import { isURL } from '@/util/validate'
+import { getUserInfo, loginByMobile, loginBySocial, loginByUsername, logout, refreshToken } from '@/api/login'
+import { deepClone, encryption } from '@/util/util'
 import webiste from '@/const/website'
-import {GetMenu} from '@/api/admin/menu'
+import { GetMenu } from '@/api/admin/menu'
 
 function addPath(ele, first) {
   const propsConfig = webiste.menu.props
@@ -28,6 +28,12 @@ function addPath(ele, first) {
 
 const user = {
   state: {
+    user_id: "",
+    dept_id: "",
+    regionCode: "",
+    projectCode: "",
+    regionName: "",
+    projectName: "",
     userInfo: {},
     permissions: {},
     roles: [],
@@ -47,16 +53,18 @@ const user = {
   },
   actions: {
     // 根据用户名登录
-    LoginByUsername({commit}, userInfo) {
+    LoginByUsername({ commit }, userInfo) {
       const user = encryption({
         data: userInfo,
         key: 'scaxscaxscaxscax',
         param: ['password']
       });
-      console.log(user)
       return new Promise((resolve, reject) => {
         loginByUsername(user.username, user.password, user.code, user.randomStr).then(response => {
-          const data = response.data
+          const data = response.data;
+          sessionStorage.setItem("user",data);
+          commit('SET_USER_ID', data.user_id)
+          commit('SET_DEPT_ID', data.dept_id)
           commit('SET_ACCESS_TOKEN', data.access_token)
           commit('SET_REFRESH_TOKEN', data.refresh_token)
           commit('SET_EXPIRES_IN', data.expires_in)
@@ -68,10 +76,13 @@ const user = {
       })
     },
     // 根据手机号登录
-    LoginByPhone({commit}, userInfo) {
+    LoginByPhone({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         loginByMobile(userInfo.mobile, userInfo.code).then(response => {
-          const data = response.data
+          const data = response.data;
+          sessionStorage.setItem("user",data);
+          commit('SET_USER_ID', data.user_id)
+          commit('SET_DEPT_ID', data.dept_id)
           commit('SET_ACCESS_TOKEN', data.access_token)
           commit('SET_REFRESH_TOKEN', data.refresh_token)
           commit('SET_EXPIRES_IN', data.expires_in)
@@ -83,10 +94,12 @@ const user = {
       })
     },
     // 根据OpenId登录
-    LoginBySocial({commit}, param) {
+    LoginBySocial({ commit }, param) {
       return new Promise((resolve, reject) => {
         loginBySocial(param.state, param.code).then(response => {
           const data = response.data
+          commit('SET_USER_ID', data.user_id)
+          commit('SET_DEPT_ID', data.dept_id)
           commit('SET_ACCESS_TOKEN', data.access_token)
           commit('SET_REFRESH_TOKEN', data.refresh_token)
           commit('SET_EXPIRES_IN', data.expires_in)
@@ -97,10 +110,14 @@ const user = {
         })
       })
     },
-    GetUserInfo({commit}) {
+    GetUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo().then((res) => {
           const data = res.data.data || {}
+          commit('SET_REGIONCODE', data.regionCode)
+          commit('SET_PROJECTCODE', data.projectCode)
+          commit('SET_REGIONNAME', data.regionName)
+          commit('SET_PROJECTNAME', data.projectName)
           commit('SET_USERIFNO', data.sysUser)
           commit('SET_ROLES', data.roles || [])
           commit('SET_PERMISSIONS', data.permissions || [])
@@ -111,10 +128,12 @@ const user = {
       })
     },
     // 刷新token
-    RefreshToken({commit, state}) {
+    RefreshToken({ commit, state }) {
       return new Promise((resolve, reject) => {
         refreshToken(state.refresh_token).then(response => {
           const data = response.data
+          commit('SET_USER_ID', data.user_id)
+          commit('SET_DEPT_ID', data.dept_id)
           commit('SET_ACCESS_TOKEN', data.access_token)
           commit('SET_REFRESH_TOKEN', data.refresh_token)
           commit('SET_EXPIRES_IN', data.expires_in)
@@ -126,9 +145,15 @@ const user = {
       })
     },
     // 登出
-    LogOut({commit}) {
+    LogOut({ commit }) {
       return new Promise((resolve, reject) => {
         logout().then(() => {
+          commit('SET_USER_ID', '')
+          commit('SET_DEPT_ID', '')
+          commit('SET_REGIONCODE', '')
+          commit('SET_PROJECTCODE', '')
+          commit('SET_REGIONNAME', '')
+          commit('SET_PROJECTNAME', '')
           commit('SET_MENU', [])
           commit('SET_PERMISSIONS', [])
           commit('SET_USER_INFO', {})
@@ -145,8 +170,14 @@ const user = {
       })
     },
     // 注销session
-    FedLogOut({commit}) {
+    FedLogOut({ commit }) {
       return new Promise(resolve => {
+        commit('SET_USER_ID', '')
+        commit('SET_DEPT_ID', '')
+        commit('SET_REGIONCODE', '')
+        commit('SET_PROJECTCODE', '')
+        commit('SET_REGIONNAME', '')
+        commit('SET_PROJECTNAME', '')
         commit('SET_MENU', [])
         commit('SET_PERMISSIONS', [])
         commit('SET_USER_INFO', {})
@@ -160,8 +191,8 @@ const user = {
     },
     // 获取系统菜单
     GetMenu({
-              commit
-            }) {
+      commit
+    }) {
       return new Promise(resolve => {
         GetMenu().then((res) => {
           const data = res.data.data
@@ -177,6 +208,25 @@ const user = {
 
   },
   mutations: {
+
+    SET_USER_ID: (state, userId) => {
+      state.user_id = userId
+    },
+    SET_DEPT_ID: (state, deptId) => {
+      state.dept_id = deptId
+    },
+    SET_REGIONCODE: (state, regionCode) => {
+      state.regionCode = regionCode
+    },
+    SET_PROJECTCODE: (state, projectCode) => {
+      state.projectCode = projectCode
+    },
+    SET_REGIONNAME: (state, regionName) => {
+      state.regionName = regionName
+    },
+    SET_PROJECTNAME: (state, projectName) => {
+      state.projectName = projectName
+    },
     SET_ACCESS_TOKEN: (state, access_token) => {
       state.access_token = access_token
       setStore({

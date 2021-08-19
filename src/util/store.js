@@ -35,7 +35,7 @@ export const getStore = (params = {}) => {
   name = keyName + name
   let obj = {},
     content;
-  obj = window.sessionStorage.getItem(name);
+  obj = window.sessionStorage.getItem(name); 
   if (validatenull(obj)) obj = window.localStorage.getItem(name);
   if (validatenull(obj)) return;
   try {

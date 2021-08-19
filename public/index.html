@@ -9,47 +9,80 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <link rel="stylesheet" href="<%= BASE_URL %>cdn/element-ui/2.4.11/theme-chalk/index.css">
+    <!-- <link rel="stylesheet" href="<%= BASE_URL %>cdn/element-ui/2.4.11/theme-chalk/index.css"> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+    <!-- 引入组件库 -->
+    <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
     <link rel="stylesheet" href="<%= BASE_URL %>cdn/animate/3.5.2/animate.css">
     <link rel="stylesheet" href="<%= BASE_URL %>cdn/iconfont/1.0.0/index.css">
     <link rel="stylesheet" href="<%= BASE_URL %>cdn/avue/avue.css">
     <link rel="stylesheet" href="<%= BASE_URL %>cdn/avue/index.css">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>微服务快速开发框架</title>
-    
+    <title>火电环保智能系统</title>
+
     <style>
-    .el-notification__group{
-        display: none;
-        height: 0;
-        top: -20000px!important;
-    }
-    .el-notification{
-        top: -20000px!important;
-    }
+        .el-notification__group {
+            display: none;
+            height: 0;
+            top: -20000px !important;
+        }
+
+        .el-notification {
+            top: -20000px !important;
+        }
+        html{
+            /* font-size: calc(100vw / 19.2)!important; */
+        }
+        html,
+        body,
+        #app {
+            height: 100%;
+            background: #13121263;
+        }
+        .avue-home {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            font-size: 14px;
+            color: #eee;
+            
+        }
+        .avue-home__title{
+             text-align: center;   
+            }
+        .menu{
+            border-top:none!important;
+        }
     </style>
 </head>
 <script>
     document.title = "火电环保智能系统"
 </script>
+
 <body>
     <noscript>
         <strong>很抱歉，如果没有 JavaScript 支持，网站将不能正常工作。请启用浏览器的 JavaScript 然后继续。</strong>
     </noscript>
+    <script src="./config.js" ></script>
     <div id="app">
         <div class="avue-home">
             <div class="avue-home__main">
-                <img class="avue-home__loading" src="./svg/loading-spin.svg" alt="loading">
+                
                 <div class="avue-home__title">
                     正在加载资源
+                    <img class="avue-home__loading" src="./svg/loading-spin.svg" alt="loading">
                 </div>
                 <div class="avue-home__sub-title">
                     初次加载资源可能需要较多时间 请耐心等待
                 </div>
             </div>
-            <div class="avue-home__footer">
+            <!-- <div class="avue-home__footer">
                 <a href="https://sca4cloud.com/zh-cn" target="_blank">
-                    Copyright © 2018 sca4cloud.com</a>
-            </div>
+                    Copyright ©  www.cqwisest.com</a>
+            </div> -->
         </div>
     </div>
     <!-- built files will be auto injected -->

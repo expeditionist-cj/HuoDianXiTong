@@ -18,21 +18,49 @@
       </span>
     </div>
     <div class="top-bar__right">
-      <div class="top-bar__item" style="line-height:64px">
+      <div class="top-bar__item" style="line-height: 64px">
         <MyTime></MyTime>
       </div>
       <!-- 报警 -->
-      <el-popover @hide="hide" v-model="visible" placement="bottom" width="496px" height="486px" trigger="manual">
-        <div class="alarm__table" style="width:496px;height:486px;overflow-y:scroll">
-            <Ala_table :tableData = "list"></Ala_table>
-        </div>
-          <div class="top-bar__item" slot="reference" >
-            <div class="top-bar__item" style="line-height:64px;cursor:pointer;fontSize:20px">
-              <el-badge :value="num" class="item">
-                <i @click="visible = !visible" size="medium" class="el-icon-bell"></i>
-              </el-badge>
-            </div>
+      <el-popover
+        @hide="hide"
+        v-model="visible"
+        placement="bottom"
+        width="496px"
+        height="486px"
+        trigger="manual"
+      >
+        <div
+          class="alarm__table"
+          style="width: 496px; height: 486px; overflow-y: scroll"
+        >
+          <div style="margin: 0 20px -30px 0; text-align: right">
+            <span
+              @click="
+                () => {
+                  this.visible = false;
+                }
+              "
+              >X</span
+            >
           </div>
+
+          <Ala_table :tableData="list"></Ala_table>
+        </div>
+        <div class="top-bar__item" slot="reference">
+          <div
+            class="top-bar__item"
+            style="line-height: 64px; cursor: pointer; fontsize: 20px"
+          >
+            <el-badge :value="num" class="item">
+              <i
+                @click="visible = !visible"
+                size="medium"
+                class="el-icon-bell"
+              ></i>
+            </el-badge>
+          </div>
+        </div>
       </el-popover>
 
       <!-- <el-tooltip v-if="showColor"
@@ -70,16 +98,19 @@
       <el-tooltip
         v-if="showFullScren"
         effect="dark"
-        :content="isFullScren?'退出全屏':'全屏'"
+        :content="isFullScren ? '退出全屏' : '全屏'"
         placement="bottom"
       >
         <div class="top-bar__item">
-          <i :class="isFullScren?'icon-tuichuquanping':'icon-quanping'" @click="handleScreen"></i>
+          <i
+            :class="isFullScren ? 'icon-tuichuquanping' : 'icon-quanping'"
+            @click="handleScreen"
+          ></i>
         </div>
       </el-tooltip>
       <el-dropdown>
         <span class="el-dropdown-link">
-          {{userInfo.username}}
+          {{ userInfo.username }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -89,8 +120,12 @@
           <el-dropdown-item>
             <router-link to="/info/index">个人信息</router-link>
           </el-dropdown-item>
-          <el-dropdown-item @click.native="$refs.seting.open()" divided>界面设置</el-dropdown-item>
-          <el-dropdown-item @click.native="logout" divided>退出系统</el-dropdown-item>
+          <el-dropdown-item @click.native="$refs.seting.open()" divided
+            >界面设置</el-dropdown-item
+          >
+          <el-dropdown-item @click.native="logout" divided
+            >退出系统</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
       <top-setting ref="seting"></top-setting>
@@ -108,7 +143,12 @@ import topLogs from "./top-logs";
 import topColor from "./top-color";
 import topSetting from "./top-setting";
 import MyTime from "./time";
-import Ala_table from "./ala_table"
+import Ala_table from "./ala_table";
+import Vue from "vue";
+import { scoketUrl } from "@/config/env.js";
+// websocket
+import VueNativeSock from "vue-native-websocket";
+
 export default {
   components: {
     topLock,
@@ -119,32 +159,44 @@ export default {
     topColor,
     topSetting,
     MyTime,
-    Ala_table
+    Ala_table,
   },
   name: "top",
   data() {
     return {
-      visible:false,
-      num:0,
-      list:[]
+      visible: false,
+      num: 0,
+      list: [],
     };
   },
   filters: {},
   created() {},
   mounted() {
+    // 注册websocket
+    let { user } = JSON.parse(window.sessionStorage.getItem("user"));
+    let sid = user.user_id || "null";
+    let area = user.regionCode || "null";
+    let plant = user.projectCode || "null";
+    let unit = "null";
+    let clientId = Date.parse(new Date());
+    let url = scoketUrl + `${sid}/${area}/${plant}/${unit}/${clientId}`;
+    this.$connect(url, { format: "json" });
     listenfullscreen(this.setScreen);
-    this.$options.sockets.onmessage = (data) => {this.doSocket(data)}
+    this.$nextTick(() => {
+      this.doSocket();
+    });
   },
+  updated() {},
   computed: {
     ...mapState({
-      showDebug: state => state.common.showDebug,
-      showTheme: state => state.common.showTheme,
-      showLock: state => state.common.showLock,
-      showFullScren: state => state.common.showFullScren,
-      showCollapse: state => state.common.showCollapse,
-      showSearch: state => state.common.showSearch,
-      showMenu: state => state.common.showMenu,
-      showColor: state => state.common.showColor
+      showDebug: (state) => state.common.showDebug,
+      showTheme: (state) => state.common.showTheme,
+      showLock: (state) => state.common.showLock,
+      showFullScren: (state) => state.common.showFullScren,
+      showCollapse: (state) => state.common.showCollapse,
+      showSearch: (state) => state.common.showSearch,
+      showMenu: (state) => state.common.showMenu,
+      showColor: (state) => state.common.showColor,
     }),
     ...mapGetters([
       "userInfo",
@@ -154,8 +206,8 @@ export default {
       "isCollapse",
       "tag",
       "logsLen",
-      "logsFlag"
-    ])
+      "logsFlag",
+    ]),
   },
   methods: {
     handleScreen() {
@@ -171,7 +223,7 @@ export default {
       this.$confirm("是否退出系统, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       }).then(() => {
         this.$store.dispatch("LogOut").then(() => {
           this.$router.push({ path: "/login" });
@@ -179,19 +231,23 @@ export default {
       });
     },
     // 处理socket数据
-    doSocket(data){
-      data = JSON.parse( data.data);
-      let {newNum,recoveryNum,list} = data;
-      this.list = list;
-      this.num = list.length;
-      this.visible = true;
+    doSocket() {
+      // 注册侦听器
+      this.$options.sockets.onmessage = (data) => {
+        data = JSON.parse(data.data);
+        let { data: list } = data;
+        this.list = list;
+        this.num = list.length;
+        if (this.num) {
+          this.visible = true;
+        }
+      };
     },
-    hide(){
+    hide() {
       this.list = [];
-      this.num = 0
-    }
-    
-  }
+      this.num = 0;
+    },
+  },
 };
 </script>
 

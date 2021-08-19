@@ -11,49 +11,54 @@ export const tableOption = {
   addBtn: false,
   editBtn: true,
   menu: false,
-  viewBtn:true,
-  column: [
-    {
+  viewBtn: true,
+  column: [{
       label: '项目',
       prop: 'projectName',
-      fixed:true,
-      minWidth:'160',
+      fixed: true,
+      minWidth: '160',
     },
-      {
+    {
       label: '机组编号',
       prop: 'unitName',
-      minWidth:160
+      minWidth: 160
     },
-      {
+    {
       label: '脱硫方式',
       prop: 'deviceConfig',
-      minWidth:'160',
+      minWidth: '160',
+      formatter(row, value, label, column) {
+        return value == '/' ? '--' : value
+      }
     },
-      {
+    {
       label: '脱硝方式',
       prop: 'deviceWay',
-      minWidth:160
+      minWidth: 160,
+      formatter(row, value, label, column) {
+        return value == '/' ? '--' : value
+      }
     },
-      {
+    {
       label: '装机容量 (MW)',
       prop: 'capacity',
-      minWidth:160,
-      sortable:true,
-      order:'ascending'
+      minWidth: 160,
+      sortable: true,
+      order: 'ascending'
     },
-      {
-      label: '投运时间',
+    {
+      label: '机组投运时间',
       prop: 'runTime',
-      minWidth:'160',
-      sortable:true,
-      order:'ascending'
+      minWidth: '160',
+      sortable: true,
+      order: 'ascending'
     },
-      {
+    {
       label: '区域/公司',
       prop: 'regionName',
-      minWidth:160
+      minWidth: 160
     },
-      {
+    {
       label: '查看详细',
       prop: 'remark',
       solt: true,

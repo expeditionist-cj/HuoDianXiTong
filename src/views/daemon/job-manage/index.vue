@@ -33,7 +33,7 @@
           </div>
         </template>
 
-        <template slot="cronExpressionForm" slot-scope="scope">
+        <template slot="cronExpressionForm">
           <div class="cron">
             <el-popover v-model="cronPopover">
               <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>

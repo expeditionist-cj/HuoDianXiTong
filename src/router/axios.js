@@ -4,6 +4,7 @@ import NProgress from 'nprogress' // progress bar
 import errorCode from '@/const/errorCode'
 import router from "@/router/router"
 import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
 import 'nprogress/nprogress.css'
 import store from "@/store"; // progress bar style
 axios.defaults.timeout = 30000
@@ -20,10 +21,13 @@ NProgress.configure({
 
 // HTTPrequest拦截
 axios.interceptors.request.use(config => {
+  // console.log(config,333);
   NProgress.start() // start progress bar
   const TENANT_ID = getStore({ name: 'tenantId' })
   const isToken = (config.headers || {}).isToken === false
   let token = store.getters.access_token
+  // console.log(Cookies.get('authorization'),888);
+  // console.log(token,444);
   if (token && !isToken) {
     config.headers['Authorization'] = 'Bearer ' + token// token
   }

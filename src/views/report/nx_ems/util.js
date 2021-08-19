@@ -13,6 +13,7 @@ export const hasValue = (obj) => {
 export const hasDays = (data, att) => {
     data = JSON.parse(JSON.stringify(data));
     let arry = [];
+    // data.pop();
     data.pop();
     data.forEach(item => {
         let day = item[att];

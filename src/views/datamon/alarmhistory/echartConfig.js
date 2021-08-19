@@ -23,7 +23,7 @@ export let lineConfig = (obj = {
         },
         xAxis: {
             type: 'category',
-            name:"时间",
+            name: "时间",
             splitLine: {
                 show: true,
                 lineStyle: {
@@ -39,7 +39,7 @@ export let lineConfig = (obj = {
         },
         yAxis: {
             type: 'value',
-            name:"参数值",
+            name: "参数值",
             splitLine: {
                 show: true,
                 lineStyle: {
@@ -55,11 +55,11 @@ export let lineConfig = (obj = {
         series: [{
             data: seriesData,
             type: 'line',
-            name:text,
+            name: text,
             smooth: true,
-            lineStyle:{
-                color:"#3F9EFF",
-                width:3,
+            lineStyle: {
+                color: "#3F9EFF",
+                width: 3,
             }
         }]
     }

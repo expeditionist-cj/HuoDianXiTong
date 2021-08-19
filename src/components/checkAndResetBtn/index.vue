@@ -1,6 +1,6 @@
 <template>
   <div class="checkAndResetBtn" :style="btnStyle">
-    <el-button @click="clickCheck" :type="checkType" size="mini">{{checkContent}}</el-button>
+    <el-button :disabled="showCheck" @click="clickCheck" :type="checkType" size="mini">{{checkContent}}</el-button>
     <el-button v-if="showRest" @click="clickReset" :type="resetType" size="mini">{{resetContent}}</el-button>
   </div>
 </template>
@@ -12,6 +12,10 @@ export default {
       showRest:{
         type:Boolean,
         default:true
+      },
+      showCheck:{
+        type:Boolean,
+        default:false
       },
       resetContent:{
         type:String,
@@ -27,7 +31,7 @@ export default {
       },
       resetType:{
         type:String,
-        default:"info"
+        default:"primary"
       }
   },
   data() {
@@ -53,8 +57,7 @@ export default {
 .checkAndResetBtn {
   height: 42px;
   line-height: 42px;
-  width: 100%;
-  line-height: 42px;
+  // width: 100%;
   text-align: right;
 }
 </style>

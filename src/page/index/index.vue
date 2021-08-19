@@ -25,6 +25,7 @@
     <div class="totop" v-show="visible" @click="totop" title="回到顶部">
       <el-button type="primary" icon="el-icon-upload2" circle></el-button>
     </div>
+    <Scroller />
   </div>
 </template>
 
@@ -40,12 +41,13 @@ import { getStore } from "@/util/store.js";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import store from "@/store";
-
+import Scroller from "@/components/vueScroller/index.vue"
 export default {
   components: {
     top,
     tags,
-    sidebar
+    sidebar,
+    Scroller
   },
   name: "index",
   data() {

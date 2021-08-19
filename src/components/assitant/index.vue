@@ -4,20 +4,35 @@
     <AssitantOrg @onOk="onOk"></AssitantOrg>
 
     <!-- 参数数据 -->
-    <AssitantParame :sonModelId="sonModelId" :data="data" style="margin-bottom:16px"></AssitantParame>
+    <AssitantParame
+      :sonModelId="sonModelId"
+      :data="data"
+      style="margin-bottom: 16px"
+    ></AssitantParame>
 
     <!-- 建议 -->
-    <AssitantAdvice :data="spl" style="margin-bottom:16px">
+    <AssitantAdvice :data="spl" style="margin-bottom: 16px">
       <span slot="header" class="header">建议</span>
     </AssitantAdvice>
 
     <!-- 烟气流量时刻曲线 -->
     <AssitantQurve :options="options">
       <div slot="header">
-        <span class="header">{{qx_title}}</span>
-        <el-button @click="open_vis" class="his-curve fr" type="primary" size="mini" plain>查看历史曲线</el-button>
-        <el-dialog width="50%" :title="qx_title+'-历史曲线'" :visible.sync="his_curve_vis">
-          <div style="display:flex;">
+        <span class="header">{{ qx_title }}</span>
+        <el-button
+          @click="open_vis"
+          class="his-curve fr"
+          type="primary"
+          size="mini"
+          plain
+          >查看历史曲线</el-button
+        >
+        <el-dialog
+          width="50%"
+          :title="qx_title + '-历史曲线'"
+          :visible.sync="his_curve_vis"
+        >
+          <div style="display: flex">
             <el-date-picker
               v-model="time"
               type="datetimerange"
@@ -27,13 +42,15 @@
               :editable="false"
               :clearable="false"
               :pickerOptions="pickerOptions"
-              style="flex:2"
+              style="flex: 2"
             ></el-date-picker>
-            <div style="flex:1;padding-left:20px;margin-top:-5px;">
-              <el-button @click="selectTime" type="primary" size="small">确定</el-button>
+            <div style="flex: 1; padding-left: 20px; margin-top: -5px">
+              <el-button @click="selectTime" type="primary" size="small"
+                >确定</el-button
+              >
             </div>
           </div>
-          <div class="his_curve_vis-wrap" style="width:100%; height:400px;">
+          <div class="his_curve_vis-wrap" style="width: 100%; height: 400px">
             <v-chart autoresize :options="his_options" />
           </div>
         </el-dialog>
@@ -64,14 +81,14 @@ export default {
       type: Number,
       default: () => {
         return 1;
-      }
+      },
     },
     qx_title: {
       type: String,
       default: () => {
         return "烟气流量时刻曲线";
-      }
-    }
+      },
+    },
   },
   data() {
     let _minTime = null;
@@ -86,10 +103,8 @@ export default {
       instanceId: "",
       his_options: {},
       time: [
-        moment()
-          .subtract(3, "hours")
-          .format("YYYY-MM-DD  HH:mm:ss"),
-        moment().format("YYYY-MM-DD  HH:mm:ss")
+        moment().subtract(3, "hours").format("YYYY-MM-DD  HH:mm:ss"),
+        moment().format("YYYY-MM-DD  HH:mm:ss"),
       ],
       pickerOptions: {
         onPick(time) {
@@ -115,12 +130,12 @@ export default {
           } else {
             return time.getTime() > Date.now();
           }
-        }
+        },
       },
       websock: null,
       path: "",
       initialLineData: "",
-      his_instanceId: null
+      his_instanceId: null,
     };
   },
   components: { AssitantParame, AssitantAdvice, AssitantQurve, AssitantOrg },
@@ -138,7 +153,7 @@ export default {
     selectTime() {
       let beginTime = moment(this.time[0]).format("YYYY-MM-DD  HH:mm:ss");
       let endTime = moment(this.time[1]).format("YYYY-MM-DD  HH:mm:ss");
-      getHistoryCurveData(this.instanceId, beginTime, endTime).then(res => {
+      getHistoryCurveData(this.instanceId, beginTime, endTime).then((res) => {
         let obj = formatterCurveData(res);
         this.his_options = getOption(obj);
       });
@@ -153,47 +168,54 @@ export default {
         .subtract(2, "hours")
         .format("YYYY-MM-DD HH:mm:ss");
       let endTime = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
-      getHistoryCurveData(this.his_instanceId, beginTime, endTime).then(res => {
-        let obj = formatterCurveData(res);
-        this.his_options = getOption(obj);
-      });
+      getHistoryCurveData(this.his_instanceId, beginTime, endTime).then(
+        (res) => {
+          let obj = formatterCurveData(res);
+          this.his_options = getOption(obj);
+        }
+      );
     },
     //点击查询按钮
     onOk(query, cnname) {
-      getInstanceId({ ...query, modelId: this.modelId }).then(res => {
+      getInstanceId({ ...query, modelId: this.modelId }).then((res) => {
         this.instanceId = res.data.data;
-        if (res.data.data) {
-          this.his_instanceId = res.data.data;
-        }
-        getDustData({ instanceId: this.instanceId }).then(res => {
-          let result = res.data.data;
-          let idx = null;
-          result.forEach((item, index) => {
-            if (item.fieldCode == "sg") {
-              idx = index;
-            }
+        if (!this.instanceId) {
+          return this.$message.error("当前项目暂无此模型");
+        } else {
+          // console.log(this.instanceId)
+          if (res.data.data) {
+            this.his_instanceId = res.data.data;
+          }
+          getDustData({ instanceId: this.instanceId }).then((res) => {
+            let result = res.data.data;
+            let idx = null;
+            result.forEach((item, index) => {
+              if (item.fieldCode == "sg") {
+                idx = index;
+              }
+            });
+            let spl = result.splice(idx, 1);
+            this.data = result;
+            this.spl = spl[0];
+            let area_plant = cnname.area + " / " + cnname.plant;
+            let unit = cnname.unit;
+            this.$store.commit("SET_AREA_PLANT", area_plant);
+            this.$store.commit("SET_UNIT", unit);
           });
-          let spl = result.splice(idx, 1);
-          this.data = result;
-          this.spl = spl[0];
-          let area_plant = cnname.area + " / " + cnname.plant;
-          let unit = cnname.unit;
-          this.$store.commit("SET_AREA_PLANT", area_plant);
-          this.$store.commit("SET_UNIT", unit);
-        });
-        getCurveData(this.instanceId).then(res => {
-          // 将返回结果保存，以便websocket进行修改
-          this.initialLineData = res;
-          let obj = formatterCurveData(this.initialLineData);
-          this.options = getOption(obj);
-        });
-        let now = Date.now();
-        this.path = `/websocket/1/${this.modelId}/${this.instanceId}/${now}`;
-        //若当前有websocket，则先关闭websocket再重新初始化
-        if (this.websock) {
-          this.websock.close();
+          getCurveData(this.instanceId).then((res) => {
+            // 将返回结果保存，以便websocket进行修改
+            this.initialLineData = res;
+            let obj = formatterCurveData(this.initialLineData);
+            this.options = getOption(obj);
+          });
+          let now = Date.now();
+          this.path = `/websocket/1/${this.modelId}/${this.instanceId}/${now}`;
+          //若当前有websocket，则先关闭websocket再重新初始化
+          if (this.websock) {
+            this.websock.close();
+          }
+          this.initWebSocket(this.path);
         }
-        this.initWebSocket(this.path);
       });
     },
     //初始化weosocket
@@ -220,7 +242,7 @@ export default {
       // 处理曲线数据
       let curveData = redata.curveData;
       let length = curveData.length;
-      this.initialLineData = this.initialLineData.map(item => {
+      this.initialLineData = this.initialLineData.map((item) => {
         for (var i = 0; i < length; i++) {
           if (curveData[i].cnName == item.cnName) {
             item.dataList.shift();
@@ -252,8 +274,8 @@ export default {
     //关闭连接
     websocketclose(e) {
       // console.log("断开连接", e);
-    }
-  }
+    },
+  },
 };
 </script>
 

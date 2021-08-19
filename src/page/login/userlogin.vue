@@ -1,36 +1,45 @@
 <template>
-  <el-form class="login-form"
-           status-icon
-           :rules="loginRules"
-           ref="loginForm"
-           :model="loginForm"
-           label-width="0">
-    <el-form-item prop="username">
-      <el-input size="small"
-                @keyup.enter.native="handleLogin"
-                v-model="loginForm.username"
-                auto-complete="off"
-                placeholder="请输入用户名">
-        <i slot="prefix"
-           class="icon-yonghu"></i>
-      </el-input>
-    </el-form-item>
-    <el-form-item prop="password">
-      <el-input size="small"
-                @keyup.enter.native="handleLogin"
-                :type="passwordType"
-                v-model="loginForm.password"
-                auto-complete="off"
-                @paste.native.capture.prevent="handlePaste"
-                placeholder="请输入密码">
-        <i class="el-icon-view el-input__icon"
-           slot="suffix"
-           @click="showPassword"></i>
-        <i slot="prefix"
-           class="icon-mima"></i>
-      </el-input>
-    </el-form-item>
-    <!-- <el-form-item prop="code"> -->
+  <div>
+    <el-form
+      class="login-form"
+      status-icon
+      :rules="loginRules"
+      ref="loginForm"
+      :model="loginForm"
+      label-width="0"
+    >
+      <el-form-item prop="username">
+        <el-input
+          size="small"
+          @keyup.enter.native="handleLogin"
+          v-model="loginForm.username"
+          auto-complete="off"
+          placeholder="请输入用户名"
+          name="loginName"
+        >
+          <i slot="prefix" class="icon-yonghu"></i>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input
+          size="small"
+          name="password"
+          @keyup.enter.native="handleLogin"
+          :type="passwordType"
+          v-model="loginForm.password"
+          auto-complete="off"
+          @paste.native.capture.prevent="handlePaste"
+          placeholder="请输入密码"
+        >
+          <i
+            class="el-icon-view el-input__icon"
+            slot="suffix"
+            @click="showPassword"
+          ></i>
+          <i slot="prefix" class="icon-mima"></i>
+        </el-input>
+      </el-form-item>
+      <!-- <el-form-item prop="code"> -->
       <!-- <el-row :span="24">
         <el-col :span="16">
           <el-input size="small"
@@ -43,7 +52,7 @@
                class="icon-yanzhengma"></i>
           </el-input>
         </el-col> -->
-        <!-- <el-col :span="8">
+      <!-- <el-col :span="8">
           <div class="login-code">
             <span class="login-code-img"
                   @click="refreshCode"
@@ -52,102 +61,144 @@
                  class="login-code-img"
                  @click="refreshCode"
                  v-else/> -->
-            <!-- <i class="icon-shuaxin login-code-icon" @click="refreshCode"></i> -->
-          <!-- </div>
+      <!-- <i class="icon-shuaxin login-code-icon" @click="refreshCode"></i> -->
+      <!-- </div>
         </el-col>
       </el-row> -->
 
-    <!-- </el-form-item> -->
-    <el-form-item>
-      <el-button type="primary"
-                 size="small"
-                 @click.native.prevent="handleLogin"
-                 class="login-submit">登录
-      </el-button>
-    </el-form-item>
-  </el-form>
+      <!-- </el-form-item> -->
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="small"
+          @click.native.prevent="handleLogin"
+          class="login-submit"
+          >登录
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
-  import {randomLenNum} from "@/util/util";
-  import {mapGetters} from "vuex";
+import { randomLenNum } from "@/util/util";
+import { mapGetters } from "vuex";
+import { getAuthority } from "@/api/admin/user.js";
+import { userName, userPassword } from "../../const/version/version.js";
 
-  export default {
-    name: "userlogin",
-    data() {
-
-      return {
-        socialForm: {
-          code: '',
-          state: ''
-        },
-        loginForm: {
-          username: "admin",
-          password: "123456",
-          code: "",
-          redomStr: ""
-        },
-        checked: false,
-        code: {
-          src: "/code",
-          value: "",
-          len: 4,
-          type: "image"
-        },
-        loginRules: {
-          username: [
-            {required: true, message: "请输入用户名", trigger: "blur"}
-          ],
-          password: [
-            {required: true, message: "请输入密码", trigger: "blur"},
-            {min: 6, message: "密码长度最少为6位", trigger: "blur"}
-          ],
-          code: [
-            {required: true, message: "请输入验证码", trigger: "blur"},
-            {min: 4, max: 4, message: "验证码长度为4位", trigger: "blur"}
-          ]
-        },
-        passwordType: "password"
-      };
-    },
-    created() {
-      this.refreshCode();
-    },
-    mounted() {
-    },
-    computed: {
-      ...mapGetters(["tagWel"])
-    },
-    props: [],
-    methods: {
-      refreshCode() {
-        this.loginForm.code = ''
-        this.loginForm.randomStr = randomLenNum(this.code.len, true)
-        this.code.type === 'text'
-          ? (this.code.value = randomLenNum(this.code.len))
-          : (this.code.src = `${this.codeUrl}?randomStr=${this.loginForm.randomStr}`)
+export default {
+  name: "userlogin",
+  data() {
+    return {
+      socialForm: {
+        code: "",
+        state: ""
       },
-      showPassword() {
-        this.passwordType == ''
-          ? (this.passwordType = 'password')
-          : (this.passwordType = '')
+      loginForm: {
+        username: userName, //默认登录时的用户名和密码
+        password: userPassword,
+        code: "",
+        redomStr: ""
       },
-      handleLogin() {
-        this.$refs.loginForm.validate(valid => {
-          if (valid) {
-            console.log(this.loginForm)
-            this.$store.dispatch("LoginByUsername", this.loginForm).then(() => {
-              this.$router.push({path: this.tagWel.value});
-            }).catch(() => {
-              this.refreshCode()
-            })
-
-          }
-        });
+      checked: false,
+      code: {
+        src: "/code",
+        value: "",
+        len: 4,
+        type: "image"
+      },
+      loginRules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, message: "密码长度最少为6位", trigger: "blur" }
+        ],
+        code: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          { min: 4, max: 4, message: "验证码长度为4位", trigger: "blur" }
+        ]
+      },
+      passwordType: "password",
+    };
+  },
+  props:{
+    loginString:{
+      type: String,
+      default(){
+        return ""
       }
     }
-  };
+  },
+  created() {
+    this.refreshCode();
+    
+  },
+  mounted() {
+    // 单点登录
+    if (this.loginString) {
+      this.loginForm.username = this.loginString.split(",")[0];
+      this.loginForm.password = this.loginString.split(",")[1];
+      this.handleLogin();
+      this.timer = setTimeout(()=>{
+        this.$emit("closeLogin",false)
+      },30000)
+      
+    }
+  },
+  computed: {
+    ...mapGetters(["tagWel"])
+  },
+  methods: {
+    refreshCode() {
+      this.loginForm.code = "";
+      this.loginForm.randomStr = randomLenNum(this.code.len, true);
+      this.code.type === "text"
+        ? (this.code.value = randomLenNum(this.code.len))
+        : (this.code.src = `${this.codeUrl}?randomStr=${this.loginForm.randomStr}`);
+    },
+    showPassword() {
+      this.passwordType == ""
+        ? (this.passwordType = "password")
+        : (this.passwordType = "");
+    },
+    handleLogin() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          // console.log(this.loginForm)
+          this.$store
+            .dispatch("LoginByUsername", this.loginForm)
+            .then(() => {
+              this.$router.push({ path: this.tagWel.value });
+              this.uid = JSON.parse(
+                sessionStorage.getItem("user")
+              ).user.user_id;
+              // 获取权限
+              this.getAuthority({ userId: this.$store.state.user.user_id });
+            })
+            .catch(() => {
+              this.refreshCode();
+              this.$emit("closeLogin",false)
+            });
+        }
+      });
+    },
+    getAuthority(query) {
+      getAuthority(query).then(res => {
+        let identity = res.data.data[0];
+        this.$store.commit("SET_IDENTITY", identity);
+      });
+    },
+
+  },
+  destroyed(){
+    clearTimeout(this.timer);
+    this.timer = null;
+  }
+};
 </script>
 
 <style>
+
 </style>

@@ -117,22 +117,19 @@ export const tableOption = {
       label: '报警颜色',
       prop: 'alarmColor',
       hide: false,
-      formsolt: true,
-      solt: true,
-      rules: [{
-        // required: true,
-        // message: '请选择部门',
-        // trigger: 'change'
-      }]
-    }, {
-      label: '创建时间',
-      prop: 'createTime',
-      type: 'datetime',
-      format: 'yyyy-MM-dd HH:mm',
-      valueFormat: 'yyyy-MM-dd HH:mm:ss',
-      editVisdiplay: false,
-      addVisdiplay: false,
-      viewVisdiplay: false,
-    }
+      // formslot: true,
+      formslot:true,
+      slot: false,
+    },
+    //  {
+    //   label: '创建时间',
+    //   prop: 'createTime',
+    //   type: 'datetime',
+    //   format: 'yyyy-MM-dd HH:mm',
+    //   valueFormat: 'yyyy-MM-dd HH:mm:ss',
+    //   editVisdiplay: false,
+    //   addVisdiplay: false,
+    //   viewVisdiplay: false,
+    // }
   ]
 }

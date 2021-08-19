@@ -18,16 +18,16 @@ export const getList = (query)=>{
 // 查询曲线数据
 export const getCurveData = (query)=>{
   return request({
-      url: '/datamonitor/hdalarminfo/getLineByPg',
-      method: 'get',
-      params: {...query,itv:"1m"}
-    })
-}
-// 导出历史报表
-export const ept_excel= (query)=>{
-  return request({
-      url: '/datamonitor/hdalarminfo/export',
+      url: '/datamonitor/hdalarminfo/getHisByCdtQu',
       method: 'get',
       params: query
     })
 }
+// // 导出历史报表
+// export const ept_excel= (query)=>{
+//   return request({
+//       url: '/datamonitor/exportHisByCdt',
+//       method: 'get',
+//       params: query
+//     })
+// }

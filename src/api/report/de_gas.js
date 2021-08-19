@@ -15,3 +15,11 @@ export const get_de_gas_excel = (query) => {
         params: query
     })
 }
+// 调整保存
+export const  saveAdjust= (data) => {
+    return request({
+        url: '/datamonitor/emsOver/so2Adjust',
+        method: 'post',
+        data: data
+    })
+}

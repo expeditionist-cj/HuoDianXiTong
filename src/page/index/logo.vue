@@ -1,27 +1,32 @@
 <template>
   <div class="avue-logo">
     <transition name="fade">
-      <span v-if="keyCollapse"
-            class="avue-logo_subtitle"
-            key="0">
-        {{website.logo}}
-      </span>
+      <span v-if="keyCollapse" class="avue-logo_subtitle" key="0">{{website.logo}}</span>
     </transition>
     <transition-group name="fade">
       <template v-if="!keyCollapse">
-        <span class="avue-logo_title"
-              key="1">{{website.indexTitle}} </span>
+        <div
+          class="avue-logo_title"
+          style="display:flex;flex-direction:column;height:64px;"
+          key="1"
+        >
+          <div style="height:50%">{{website.indexTitle}}</div>
+          <div style="height:50%;line-height:35px;font-size:8px;">{{version}}</div>
+        </div>
       </template>
     </transition-group>
   </div>
 </template>
 
 <script>
+import { version } from "../../const/version/version.js";
 import { mapGetters } from "vuex";
 export default {
   name: "logo",
   data() {
-    return {};
+    return {
+      version
+    };
   },
   created() {},
   computed: {

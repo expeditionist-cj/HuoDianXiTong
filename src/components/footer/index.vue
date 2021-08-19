@@ -21,7 +21,7 @@ export default {
 
 <style scoped lang="scss">
 .footer {
-//   width: 359px;
+  //   width: 359px;
   height: 20px;
   font-size: 12px;
   font-family: PingFangSC-Regular, PingFang SC;

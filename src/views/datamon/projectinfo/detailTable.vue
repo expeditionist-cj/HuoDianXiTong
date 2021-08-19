@@ -9,28 +9,28 @@
         <th colspan="2">脱硫设计指标</th>
       </tr>
       <tr>
-        <td>脱硫效率(%)</td>
-        <td class="ellipsis" :title="data.sinputGas">{{data.sefficiency | formatValue}}</td>
+        <td style="text-align:left;">脱硫效率(%)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.sinputGas">{{data.sefficiency | formatValue}}</td>
       </tr>
       <tr>
-        <td>入口SO2浓度(mg/Nm3)</td>
-        <td class="ellipsis" :title="data.sinputSo2">{{data.sinputSo2 | formatValue}}</td>
+        <td style="text-align:left;">入口SO2浓度(mg/Nm3)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.sinputSo2">{{data.sinputSo2 | formatValue}}</td>
       </tr>
       <tr>
-        <td>&emsp;&emsp;设计入口烟气量（干基，6%烟气量）(Nm3/h)&emsp;&emsp;</td>
-        <td class="ellipsis" :title="data.sinputGas">{{data.sinputGas | formatValue}}</td>
+        <td style="text-align:left;">设计入口烟气量（干基，6%烟气量）(Nm3/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.sinputGas">{{data.sinputGas | formatValue}}</td>
       </tr>
       <tr>
-        <td>装置电耗(KWh)</td>
-        <td class="ellipsis" :title="data.selectricRate">{{data.selectricRate | formatValue}}</td>
+        <td style="text-align:left;">装置电耗(KWh)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.selectricRate">{{data.selectricRate | formatValue}}</td>
       </tr>
       <tr>
-        <td>吸收剂消耗量(t/h)</td>
-        <td class="ellipsis" :title="data.sattractantPower">{{data.sattractantPower | formatValue}}</td>
+        <td style="text-align:left;">吸收剂消耗量(t/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.sattractantPower">{{data.sattractantPower | formatValue}}</td>
       </tr>
       <tr>
-        <td>水耗量(t/h)</td>
-        <td class="ellipsis" :title="data.swaterPower">{{data.swaterPower | formatValue}}</td>
+        <td style="text-align:left;">水耗量(t/h)</td>
+        <td style="text-align:right;" class="ellipsis" :title="data.swaterPower">{{data.swaterPower | formatValue}}</td>
       </tr>
     </table>
   </div>

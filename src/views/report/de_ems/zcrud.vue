@@ -1,8 +1,16 @@
 <template>
   <div class="zcrud">
-    <el-table :data="tableData" style="width: 100%" size="small" :height="height">
-      <el-table-column align="center" label="日期" prop="date" width="140" fixed></el-table-column>
-
+    <el-table
+      :data="tableData"
+      style="width: 100%; min-height: 550px"
+      size="small"
+      :height="height"
+    >
+      <el-table-column align="center" label="日期" width="140" fixed>
+        <template slot-scope="scope">
+          <span>{{ scope.row.date == "32" ? "调整" : scope.row.date }}</span>
+        </template>
+      </el-table-column>
       <!-- 吸收剂(石灰石粉)-->
       <el-table-column label="吸收剂(石灰石粉)" align="center">
         <el-table-column align="center" label="采购量">
@@ -30,21 +38,21 @@
             :minWidth="DE_EMS_LS['纯度']['width']"
           ></el-table-column>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           align="center"
-          v-for="(item,index) of unitList"
+          v-for="(item, index) of unitList"
           :key="index"
-          :label="item+'耗量'"
+          :label="item + '耗量'"
         >
           <el-table-column
             align="center"
             label="吨"
-            :prop="item +DE_EMS_LS['耗量']['prop']"
+            :prop="item + DE_EMS_LS['耗量']['prop']"
             :minWidth="DE_EMS_LS['耗量']['width']"
           ></el-table-column>
-        </el-table-column>
+        </el-table-column> -->
 
-        <el-table-column align="center" label="合计">
+        <el-table-column align="center" label="耗用">
           <el-table-column
             align="center"
             label="吨"
@@ -89,11 +97,11 @@
             :minWidth="DE_EMS_CB['纯度']['width']"
           ></el-table-column>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           align="center"
-          v-for="(item,index) of unitList"
+          v-for="(item, index) of unitList"
           :key="index"
-          :label="item+'耗量'"
+          :label="item + '耗量'"
         >
           <el-table-column
             align="center"
@@ -101,9 +109,9 @@
             :prop="item + DE_EMS_CB['耗量']['prop']"
             :minWidth="DE_EMS_CB['耗量']['width']"
           ></el-table-column>
-        </el-table-column>
+        </el-table-column> -->
 
-        <el-table-column align="center" label="合计">
+        <el-table-column align="center" label="耗用">
           <el-table-column
             align="center"
             label="吨"
@@ -146,9 +154,9 @@
       <el-table-column label="脱硫装置及分摊电耗" align="center">
         <el-table-column
           align="center"
-          v-for="(item,index) of unitList"
+          v-for="(item, index) of unitList"
           :key="index"
-          :label="item+'电耗'"
+          :label="item + '电耗'"
         >
           <el-table-column
             align="center"
@@ -178,9 +186,9 @@
 
         <el-table-column
           align="center"
-          v-for="(item,index) of unitList"
+          v-for="(item, index) of unitList"
           :key="index"
-          :label="item+'分摊'"
+          :label="item + '分摊'"
         >
           <el-table-column
             align="center"
@@ -265,20 +273,20 @@
       </el-table-column>
 
       <!-- 石膏产量及销售 -->
-      <el-table-column label="石膏产量及销售" align="center">
-        <el-table-column
+      <el-table-column label="石膏" align="center">
+        <!-- <el-table-column
           align="center"
-          v-for="(item,index) of unitList"
+          v-for="(item, index) of unitList"
           :key="index"
-          :label="item+'石膏产量'"
+          :label="item + '石膏产量'"
         >
           <el-table-column
             align="center"
             label="吨"
-            :prop="item +DE_EMS_SG['石膏产量']['prop']"
+            :prop="item + DE_EMS_SG['石膏产量']['prop']"
             :minWidth="DE_EMS_SG['石膏产量']['width']"
           ></el-table-column>
-        </el-table-column>
+        </el-table-column> -->
 
         <el-table-column align="center" label="石膏产量">
           <el-table-column
@@ -289,7 +297,7 @@
           ></el-table-column>
         </el-table-column>
 
-        <el-table-column align="center" label="石膏销量">
+        <el-table-column align="center" label="石膏出库量">
           <el-table-column
             align="center"
             label="吨"
@@ -319,14 +327,68 @@
           ></el-table-column>
         </el-table-column>
       </el-table-column>
+      <!-- 脱硫用汽 -->
+      <el-table-column label="脱硫用气" align="center">
+        <el-table-column align="center" label="耗气量">
+          <el-table-column
+            align="center"
+            label="吨"
+            :prop="DE_EMS_HQL['耗气量']['prop']"
+            :minWidth="DE_EMS_HQL['耗气量']['width']"
+          ></el-table-column>
+        </el-table-column>
+
+        <el-table-column align="center" label="耗气率">
+          <el-table-column
+            align="center"
+            label="吨/万KWh"
+            :prop="DE_EMS_HQL['耗气率']['prop']"
+            :minWidth="DE_EMS_HQL['耗气率']['width']"
+          ></el-table-column>
+        </el-table-column>
+      </el-table-column>
 
       <!-- 操作栏 -->
-      <el-table-column fixed="right" align="center" label="操作" width="100">
+      <el-table-column
+        v-if="desulphurize_update || desulphurize_delete"
+        fixed="right"
+        align="center"
+        label="操作"
+        width="100"
+      >
         <template slot-scope="scope">
-          <div v-if="scope.row.date=='合计'||scope.row.date=='调整'"></div>
+          <div v-if="scope.row.date == '合计'"></div>
+          <div v-else-if="scope.row.date == '32'">
+            <el-button
+              v-if="roles[0] == 1 || roles[0] == 5 || roles[0] == 6 || roles[0] == 8"
+              @click="handleClick(scope.row)"
+              type="text"
+              size="small"
+              >修改</el-button
+            >
+            <el-button
+              v-if="roles[0] == 1 || roles[0] == 5 || roles[0] == 6 || roles[0] == 8"
+              @click="doDelete(scope.row)"
+              type="text"
+              size="small"
+              >删除</el-button
+            >
+          </div>
           <div v-else>
-            <el-button v-if= "desulphurize_update" @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-            <el-button v-if= "desulphurize_delete" @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+            <el-button
+              v-if="desulphurize_update"
+              @click="handleClick(scope.row)"
+              type="text"
+              size="small"
+              >修改</el-button
+            >
+            <el-button
+              v-if="desulphurize_delete && scope.row.date == '32'"
+              @click="doDelete(scope.row)"
+              type="text"
+              size="small"
+              >删除</el-button
+            >
           </div>
         </template>
       </el-table-column>
@@ -340,7 +402,12 @@
             <div class="select__wrap">
               <div>选择时间：</div>
               <div>
-                <el-select @change="changeDate" size="small" v-model="date" placeholder="请选择">
+                <el-select
+                  @change="changeDate"
+                  size="small"
+                  v-model="date"
+                  placeholder="请选择"
+                >
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -354,294 +421,283 @@
         </el-row>
       </div>
 
-      <el-row :gutter="30" class="change_container">
+      <div style="display: flex; justify-content: space-between">
         <!-- 吸收剂 -->
-        <el-col :xl="11" :md="8">
-          <div class="change_left">
-            <div class="_title">
-              <span>吸收剂</span>
-            </div>
-            <div class="xsj_container">
-              <div>
-                <!-- 石灰石粉耗用 -->
-                <div class="xsj_box">
-                  <div class="shsf_ems">
-                    <div class="shsf_title">石灰石粉耗用</div>
-                    <div class="shsf_inputs">
-                      <myInputs
-                        :list="unitList"
-                        :label="'采购量'"
-                        :unit="'t'"
-                        :att="'limestone_powder_procure'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        v-for="(item,index) in unitList"
-                        :key="index"
-                        :label="item+'耗量'"
-                        :unit="'t'"
-                        :att="item + '_limestone_powder_consum'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        :label="'库存量'"
-                        :unit="'t'"
-                        :att="'limestone_powder_stock'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        :label="'纯度'"
-                        :unit="'CaCO3%'"
-                        :att="'limestone_powder_purity'"
-                      ></myInputs>
-                    </div>
-                    <div class="shsf_tongji">
-                      <myInputs
-                        :list="unitList"
-                        :disabled="true"
-                        :label="'合计'"
-                        :unit="'t'"
-                        :att="'sum_limestone_powder_consum'"
-                      ></myInputs>
-                    </div>
-                  </div>
-                </div>
-                <div style="border-bottom:1px solid #ccc; margin:10px 0;"></div>
-              </div>
-              <!-- 石灰石、电石渣耗用 -->
-              <div>
-                <div class="xsj_box">
-                  <div class="shsf_ems">
-                    <div class="shsf_title">石灰石、电石渣耗用</div>
-                    <div class="shsf_inputs">
-                      <myInputs
-                        :list="unitList"
-                        :label="'采购量'"
-                        :unit="'t'"
-                        :att="'carbide_slag_procure'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        v-for="(item,index) in unitList"
-                        :key="index"
-                        :label="item+'耗量'"
-                        :unit="'t'"
-                        :att="item + '_carbide_slag_consum'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        :label="'库存量'"
-                        :unit="'t'"
-                        :att="'carbide_slag_stock'"
-                      ></myInputs>
-                      <myInputs
-                        :list="unitList"
-                        :label="'纯度'"
-                        :unit="'%'"
-                        :att="'carbide_slag_purity'"
-                      ></myInputs>
-                    </div>
-                    <div class="shsf_tongji">
-                      <myInputs
-                        :list="unitList"
-                        :disabled="true"
-                        :label="'合计'"
-                        :unit="'t'"
-                        :att="'sum_carbide_slag_consum'"
-                      ></myInputs>
-                    </div>
-                  </div>
-                </div>
-                <div style="border-bottom:1px solid #ccc; margin:10px 0;"></div>
-              </div>
-              <!-- 吸收剂总耗用 -->
-              <div>
+        <div class="change_left" style="width: 36%">
+          <div class="_title">
+            <span>吸收剂</span>
+          </div>
+          <div class="xsj_container">
+            <div>
+              <!-- 石灰石粉耗用 -->
+              <div class="xsj_box">
                 <div class="shsf_ems">
-                  <div class="shsf_title">吸收剂总耗用</div>
-                  <div class="shsf_tongji">
+                  <div class="shsf_title">石灰石粉耗用</div>
+                  <div class="shsf_inputs">
                     <myInputs
                       :list="unitList"
-                      :disabled="true"
-                      :label="'总耗量'"
+                      :label="'采购量'"
                       :unit="'t'"
-                      :att="'sumhl'"
+                      :att="'limestone_powder_procure'"
+                    ></myInputs>
+                    <!-- <myInputs
+                      :list="unitList"
+                      v-for="(item, index) in unitList"
+                      :key="index"
+                      :label="item + '耗量'"
+                      :unit="'t'"
+                      :att="item + '_limestone_powder_consum'"
+                    ></myInputs> -->
+                    <myInputs
+                      :list="unitList"
+                      :label="'库存量'"
+                      :unit="'t'"
+                      :att="'limestone_powder_stock'"
+                    ></myInputs>
+                    <myInputs
+                      :list="unitList"
+                      :label="'纯度'"
+                      :unit="'CaCO3%'"
+                      :att="'limestone_powder_purity'"
                     ></myInputs>
                   </div>
+                  <!-- <div class="shsf_tongji"> -->
+                  <myInputs
+                    :list="unitList"
+                    :label="'耗用'"
+                    :unit="'t'"
+                    :att="'sum_limestone_powder_consum'"
+                  ></myInputs>
+                  <!-- </div> -->
                 </div>
               </div>
+              <div style="border-bottom: 1px solid #ccc; margin: 10px 0"></div>
             </div>
-          </div>
-        </el-col>
-        <!-- 电耗 -->
-        <el-col :xl="6" :md="8">
-          <div class="change_center">
-            <div class="_title">
-              <span>电耗</span>
+            <!-- 石灰石、电石渣耗用 -->
+            <div>
+              <div class="xsj_box">
+                <div class="shsf_ems">
+                  <div class="shsf_title">石灰石、电石渣耗用</div>
+                  <div class="shsf_inputs">
+                    <myInputs
+                      :list="unitList"
+                      :label="'采购量'"
+                      :unit="'t'"
+                      :att="'carbide_slag_procure'"
+                    ></myInputs>
+                    <!-- <myInputs
+                      :list="unitList"
+                      v-for="(item, index) in unitList"
+                      :key="index"
+                      :label="item + '耗量'"
+                      :unit="'t'"
+                      :att="item + '_carbide_slag_consum'"
+                    ></myInputs> -->
+                    <myInputs
+                      :list="unitList"
+                      :label="'库存量'"
+                      :unit="'t'"
+                      :att="'carbide_slag_stock'"
+                    ></myInputs>
+                    <myInputs
+                      :list="unitList"
+                      :label="'纯度'"
+                      :unit="'%'"
+                      :att="'carbide_slag_purity'"
+                    ></myInputs>
+                  </div>
+                  <!-- <div class="shsf_tongji"> -->
+                  <myInputs
+                    :list="unitList"
+                    :label="'耗用'"
+                    :unit="'t'"
+                    :att="'sum_carbide_slag_consum'"
+                  ></myInputs>
+                  <!-- </div> -->
+                </div>
+              </div>
+              <div style="border-bottom: 1px solid #ccc; margin: 10px 0"></div>
             </div>
-            <div class="xsj_container">
-              <div>
-                <div style="margin-top:60px;">
-                  <div class="shsf_ems">
-                    <div class="shsf_inputs">
-                      <myInputs
-                        :list="unitList"
-                        v-for="(item,index) in unitList"
-                        :key="index"
-                        :label="item+'耗电'"
-                        :unit="'万KWh'"
-                        :att="item + '_power'"
-                      ></myInputs>
-                    </div>
-                    <div class="shsf_tongji">
-                      <!-- 耗电合计 -->
-                      <myInputs
-                        :list="unitList"
-                        :disabled="true"
-                        :label="'合计'"
-                        :unit="'万KWh'"
-                        :att="'sum_power'"
-                      ></myInputs>
-                    </div>
-                  </div>
-                </div>
-                <div style="border-bottom:1px solid #ccc; margin:10px 0;"></div>
-              </div>
-              <div>
-                <div style="margin-top:0px;">
-                  <div class="shsf_ems">
-                    <div class="shsf_inputs">
-                      <myInputs
-                        :list="unitList"
-                        v-for="(item,index) in unitList"
-                        :key="index"
-                        :label="item+'分摊'"
-                        :unit="'万KWh'"
-                        :att="item + '_share'"
-                      ></myInputs>
-                    </div>
-                    <div class="shsf_tongji">
-                      <!-- 分摊合计 -->
-                      <myInputs
-                        :list="unitList"
-                        :disabled="true"
-                        :label="'合计'"
-                        :unit="'万KWh'"
-                        :att="'sum_share'"
-                      ></myInputs>
-                    </div>
-                  </div>
-                </div>
-                <div style="border-bottom:1px solid #ccc; margin:10px 0;"></div>
-              </div>
+            <!-- 吸收剂总耗用 -->
+            <div>
               <div class="shsf_ems">
+                <div class="shsf_title">吸收剂总耗用</div>
                 <div class="shsf_tongji">
                   <myInputs
                     :list="unitList"
                     :disabled="true"
-                    :label="'总电量'"
-                    :unit="'万KWh'"
-                    :att="'sumdh'"
+                    :label="'总耗量'"
+                    :unit="'t'"
+                    :att="'sumhl'"
                   ></myInputs>
                 </div>
               </div>
             </div>
           </div>
-        </el-col>
+        </div>
+        <!-- 电耗 -->
+        <div class="change_center" style="width: 30%">
+          <div class="_title">
+            <span>电耗</span>
+          </div>
+          <div class="xsj_container">
+            <div>
+              <div style="margin-top: 60px">
+                <div class="shsf_ems">
+                  <div class="shsf_inputs">
+                    <myInputs
+                      :list="unitList"
+                      v-for="(item, index) in unitList"
+                      :key="index"
+                      :label="item + '耗电'"
+                      :unit="'万KWh'"
+                      :att="item + '_power'"
+                    ></myInputs>
+                  </div>
+                  <div class="shsf_tongji">
+                    <!-- 耗电合计 -->
+                    <myInputs
+                      :list="unitList"
+                      :disabled="true"
+                      :label="'合计'"
+                      :unit="'万KWh'"
+                      :att="'sum_power'"
+                    ></myInputs>
+                  </div>
+                </div>
+              </div>
+              <div style="border-bottom: 1px solid #ccc; margin: 10px 0"></div>
+            </div>
+            <div>
+              <div style="margin-top: 0px">
+                <div class="shsf_ems">
+                  <div class="shsf_inputs">
+                    <myInputs
+                      :list="unitList"
+                      v-for="(item, index) in unitList"
+                      :key="index"
+                      :label="item + '分摊'"
+                      :unit="'万KWh'"
+                      :att="item + '_share'"
+                    ></myInputs>
+                  </div>
+                  <div class="shsf_tongji">
+                    <!-- 分摊合计 -->
+                    <myInputs
+                      :list="unitList"
+                      :disabled="true"
+                      :label="'合计'"
+                      :unit="'万KWh'"
+                      :att="'sum_share'"
+                    ></myInputs>
+                  </div>
+                </div>
+              </div>
+              <div style="border-bottom: 1px solid #ccc; margin: 10px 0"></div>
+            </div>
+            <div class="shsf_ems">
+              <div class="shsf_tongji">
+                <myInputs
+                  :list="unitList"
+                  :disabled="true"
+                  :label="'总电量'"
+                  :unit="'万KWh'"
+                  :att="'sumdh'"
+                ></myInputs>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <el-col :xl="6" :md="8">
-          <div class="change_right">
-            <!-- 耗水 -->
-            <div class="hs_sg_box">
-              <div class="_title">
-                <span>耗水</span>
-              </div>
-              <div style="padding:20px;">
-                <div>
-                  <div style="margin-top:20px;">
-                    <div class="shsf_ems">
-                      <div class="shsf_inputs">
-                        <myInputs
-                          :list="unitList"
-                          :label="'工业水'"
-                          :unit="'t'"
-                          :att="'industrial_water'"
-                        ></myInputs>
-                        <myInputs
-                          :list="unitList"
-                          :label="'工艺水'"
-                          :unit="'t'"
-                          :att="'process_water'"
-                        ></myInputs>
-                      </div>
-                      <div class="shsf_tongji">
-                        <myInputs
-                          :disabled="true"
-                          :list="unitList"
-                          :label="'合计'"
-                          :unit="'t'"
-                          :att="'sum_water'"
-                        ></myInputs>
-                      </div>
+        <div class="change_right" style="width: 30%">
+          <!-- 耗水 -->
+          <div class="hs_sg_box">
+            <div class="_title">
+              <span>耗水</span>
+            </div>
+            <div style="padding: 20px">
+              <div>
+                <div style="margin-top: 20px">
+                  <div class="shsf_ems">
+                    <div class="shsf_inputs">
+                      <myInputs
+                        :list="unitList"
+                        :label="'工业水'"
+                        :unit="'t'"
+                        :att="'industrial_water'"
+                      ></myInputs>
+                      <myInputs
+                        :list="unitList"
+                        :label="'工艺水'"
+                        :unit="'t'"
+                        :att="'process_water'"
+                      ></myInputs>
+                    </div>
+                    <div class="shsf_tongji">
+                      <myInputs
+                        :disabled="true"
+                        :list="unitList"
+                        :label="'合计'"
+                        :unit="'t'"
+                        :att="'sum_water'"
+                      ></myInputs>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- 耗汽 -->
-            <div class="hq_box">
-              <div class="_title">
-                <span>耗汽</span>
-              </div>
-              <div style="padding:20px;">
+          </div>
+          <!-- 耗汽 -->
+          <div class="hq_box">
+            <div class="_title">
+              <span>耗汽</span>
+            </div>
+            <div style="padding: 20px">
+              <div>
                 <div>
-                  <div style="margin-top:50px;">
-                    <div class="shsf_ems">
-                      <div class="shsf_inputs">
-                        <myInputs
-                          :list="unitList"
-                          :label="'耗汽量'"
-                          :unit="'t'"
-                          :att="'air_consumption'"
-                        ></myInputs>
-                      </div>
+                  <div class="shsf_ems">
+                    <div class="shsf_inputs">
+                      <myInputs
+                        :list="unitList"
+                        :label="'耗汽量'"
+                        :unit="'t'"
+                        :att="'steam_comsumption'"
+                      ></myInputs>
+                      <myInputs
+                        :list="unitList"
+                        :label="'耗气量'"
+                        :unit="'t'"
+                        :att="'air_consumption'"
+                      ></myInputs>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- 石膏产量及销量 -->
-            <div class="hs_sg_box">
-              <div class="_title">
-                <span>石膏产量及销量</span>
-              </div>
-              <div style="padding:20px;">
+          </div>
+          <!-- 石膏产量及销量 -->
+          <div class="hs_sg_box_shigao">
+            <div class="_title">
+              <span>石膏产量及销量</span>
+            </div>
+            <div style="padding: 20px">
+              <div>
                 <div>
-                  <div>
-                    <div class="shsf_ems">
+                  <div class="shsf_ems">
+                    <div class="shsf_inputs">
                       <div class="shsf_inputs">
-                        <div class="shsf_inputs">
-                          <myInputs
-                            :list="unitList"
-                            v-for="(item,index) in unitList"
-                            :key="index"
-                            :label="item+'石膏产量'"
-                            :unit="'t'"
-                            :att="item+'_gypsum_output'"
-                          ></myInputs>
-                          <myInputs
-                            :list="unitList"
-                            :disabled="true"
-                            :label="'石膏产量'"
-                            :unit="'t'"
-                            :att="'sum_gypsum_output'"
-                          ></myInputs>
-                          <myInputs
-                            :list="unitList"
-                            :label="'石膏销量'"
-                            :unit="'t'"
-                            :att="'gypsum_sales'"
-                          ></myInputs>
-                        </div>
+                        <myInputs
+                          :list="unitList"
+                          :label="'石膏产量'"
+                          :unit="'t'"
+                          :att="'gypsum_output'"
+                        ></myInputs>
+                        <myInputs
+                          :list="unitList"
+                          :label="'石膏出库量'"
+                          :unit="'t'"
+                          :att="'gypsum_sales'"
+                        ></myInputs>
                       </div>
                     </div>
                   </div>
@@ -649,9 +705,9 @@
               </div>
             </div>
           </div>
-        </el-col>
-      </el-row>
-
+        </div>
+      </div>
+      <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="onOk">确 定</el-button>
@@ -668,16 +724,16 @@ import {
   DE_EMS_CB,
   DE_EMS_SUM,
   DE_EMS_DH,
-  DE_EMS_YS
+  DE_EMS_YS,
 } from "../../../dict/index";
 import myInputs from "@/components/myInputs";
 import { hasDays, hasValue } from "./util";
-import {mapGetters} from 'vuex';
+import { mapGetters } from "vuex";
 import {
   del_de_ems,
   update_de_ems,
   add_de_ems,
-  get_de_ems
+  get_de_ems,
 } from "../../../api/report/de_ems";
 export default {
   data() {
@@ -699,8 +755,8 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
-        }
-      }
+        },
+      },
     };
   },
   props: {
@@ -708,27 +764,27 @@ export default {
       type: Array,
       default: () => {
         return ["#1", "#2"];
-      }
+      },
     },
     tableData: {
       type: Array,
       default: () => {
         return [];
-      }
+      },
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     year: "",
     month: "",
-    point_code: ""
+    point_code: "",
   },
   components: {
     myInputs,
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(["permissions", "roles"]),
   },
   created() {
     this.desulphurize_update = this.permissions["desulphurize_update"]; // 修改
@@ -746,14 +802,16 @@ export default {
         data.month = this.month;
         data.day = this.date;
         delete data.date;
-        for(var key in data){
-          if(data[key]==''){
-            data[key]=null;
+        for (var key in data) {
+          if (data[key] == "") {
+            data[key] = null;
           }
         }
-        update_de_ems({ data: JSON.stringify(data) }).then(res => {
-          let msg = res.data.msg;
-          if (msg == "success") {
+        data["purity"] =
+          data.carbide_slag_purity || data.limestone_powder_purity;
+        update_de_ems({ data: JSON.stringify(data) }).then((res) => {
+          let msg = res.data.code;
+          if (msg == 0) {
             this.dialogFormVisible = false;
             this.timer = setTimeout(() => {
               this.$store.commit("SET_ISSUCESS", true);
@@ -786,7 +844,7 @@ export default {
           datas[key] = null;
         }
         data = { ...datas, ...data };
-        add_de_ems({ data: JSON.stringify(data) }).then(res => {
+        add_de_ems({ data: JSON.stringify(data) }).then((res) => {
           let msg = res.data.msg;
           if (msg == "success") {
             this.dialogFormVisible = false;
@@ -803,23 +861,32 @@ export default {
       }
     },
     handleClick(row) {
-      console.log(row)
+      if (!row.id && row.date != "32") {
+        return this.$message.error("请先填写日报");
+      }
       let days = hasDays(this.tableData, "date");
       let day = row.date;
-      if (days.indexOf(day) < 0) {
-        this.$message.error("请先新增！");
-        return false;
-      }
+      // if (days.indexOf(day) < 0) {
+      //   this.$message.error("请先新增！");
+      //   return false;
+      // }
       this.title = "修改记录";
-      this.options = days.map(item => {
+      this.options = days.map((item) => {
         return {
-          label: this.year + "-" + this.month + "-" + item,
-          value: item
+          label:
+            item == "32" ? "调整" : this.year + "-" + this.month + "-" + item,
+          value: item,
         };
       });
       this.date = day;
       this.dialogFormVisible = true;
-      this.$store.commit("SET_ROW", JSON.parse(JSON.stringify(row)));
+      row = JSON.parse(JSON.stringify(row));
+      _.forOwn(row, (value, key) => {
+        if (value == "--") {
+          row[key] = null;
+        }
+      });
+      this.$store.commit("SET_ROW", row);
     },
     onOk() {
       if (this.title == "修改记录") {
@@ -833,16 +900,16 @@ export default {
       this.$confirm("是否删除本行数据", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           let query = {
             point_code: this.point_code,
             year: this.year,
             month: this.month,
-            day: row.date
+            day: row.date,
           };
-          del_de_ems({ data: JSON.stringify(query) }).then(res => {
+          del_de_ems({ data: JSON.stringify(query) }).then((res) => {
             let msg = res.data.msg;
             if (msg == "success") {
               this.timer = setTimeout(() => {
@@ -857,7 +924,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -880,12 +947,12 @@ export default {
       value = value * 1;
       let row = this.tableData[value - 1];
       this.$store.commit("SET_ROW", JSON.parse(JSON.stringify(row)));
-    }
+    },
   },
   destroyed() {
     clearTimeout(this.timer);
     this.timer = null;
-  }
+  },
 };
 </script>
 
@@ -928,13 +995,15 @@ export default {
   }
 }
 .change_left {
-  height: 778px;
+  min-width: 240px;
+  height: 578px;
   border-radius: 6px;
   border: 1px solid rgba(232, 232, 232, 1);
 }
 .xsj_container {
   padding: 20px;
-  height: 746px;
+  // min-width: 300px;
+  height: 548px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -954,9 +1023,11 @@ export default {
 }
 .shsf_inputs {
   display: flex;
-  flex-flow: wrap;
+  // flex-flow: wrap;
+  flex-direction: column;
 }
 .shsf_tongji {
+  width: 90%;
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -964,22 +1035,29 @@ export default {
 }
 
 .change_center {
-  height: 778px;
+  min-width: 240px;
+  height: 578px;
   border-radius: 6px;
   border: 1px solid rgba(232, 232, 232, 1);
 }
 .change_right {
-  height: 778px;
+  min-width: 240px;
+  height: 578px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   .hs_sg_box {
-    height: 233px;
+    height: 200px;
+    border-radius: 6px;
+    border: 1px solid rgba(232, 232, 232, 1);
+  }
+  .hs_sg_box_shigao {
+    height: 170px;
     border-radius: 6px;
     border: 1px solid rgba(232, 232, 232, 1);
   }
   .hq_box {
-    height: 207px;
+    height: 180px;
     border-radius: 6px;
     border: 1px solid rgba(232, 232, 232, 1);
   }

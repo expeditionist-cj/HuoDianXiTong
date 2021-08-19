@@ -31,3 +31,11 @@ export const del_nx_ems = (query) => {
         params: query
     })
 }
+// 保存所有
+export const update_all = (query) => {
+    return request({
+        url: '/datamonitor/hd_txconsume/batch_update',
+        method: 'post',
+        data: query
+    })
+}

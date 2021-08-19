@@ -47,8 +47,8 @@
                 size="mini"
                 border
               >
-                <el-table-column prop="sys" label="紧急" min-width="400" align="left"></el-table-column>
-                <el-table-column prop="pcode" label="报警电厂" align="left"></el-table-column>
+                <el-table-column prop="sys" label="紧急"  align="left"></el-table-column>
+                <el-table-column prop="pname" label="报警电厂" align="left"></el-table-column>
               </el-table>
             </div>
           </div>
@@ -61,17 +61,17 @@
       <Card cardStyles="height:100%">
         <div class="list__wrap">
           <el-row :gutter="10">
-            <el-col :span="20">
+            <el-col :span="16">
               <SelOrg
                 @selectArear="selectArear"
                 @selectPlant="selectPlant"
                 @selectUnit="selectUnit"
-                @selectSystem="selectSystem"
+                :showSystem="false"
                 @selectDevice="selectDevice"
                 ref="myorg"
               />
             </el-col>
-            <el-col :span="4">
+            <el-col :span="4" >
               <BtnList btnStyle="textAlign:center" @check="checkList" @reset="setReset" />
             </el-col>
           </el-row>
@@ -80,7 +80,7 @@
               <div class="selectOrg clearfix">
                 <div class="item">
                   <div class="grid-content bg-purple">
-                    <div>传感器类型：</div>
+                    <div>报警点类型：</div>
                     <div>
                       <el-select
                         size="small"
@@ -122,8 +122,7 @@
                 <div class="item"></div>
                 <div class="item"></div>
               </div>
-            </el-col>
-            <el-col :span="4"></el-col>
+            </el-col> 
           </el-row>
           <div class="list__content">
             <avue-crud
@@ -131,7 +130,7 @@
               :data="listData"
               :table-loading="tableLoading"
               :option="tableOption"
-               @refresh-change="refreshChange"
+              @refresh-change="refreshChange"
             ></avue-crud>
           </div>
         </div>
@@ -146,7 +145,7 @@ import {
   fetchAlarmCount,
   fetchalarmTipInfo,
   fetchAlarmLevle,
-  fetchAlarmTableData
+  fetchAlarmTableData,
 } from "@/api/datamon/hdalarminfo";
 import { tableOption } from "@/const/crud/datamon/hdalarminfo";
 import { mapGetters } from "vuex";
@@ -161,7 +160,7 @@ import {
   ssbjCellStyle,
   ssbjHeader,
   tipsHeader,
-  tipsCellStyle
+  tipsCellStyle,
 } from "./config.js";
 import _ from "lodash";
 export default {
@@ -176,28 +175,28 @@ export default {
       sensorOption: [
         {
           label: "全部",
-          value: "all"
+          value: "all",
         },
         {
           label: "模拟量",
-          value: "0"
+          value: "ax",
         },
         {
-          label: "数字量",
-          value: "1"
+          label: "开关量",
+          value: "dx",
         },
         {
-          label: "短整型",
-          value: "2"
+          label: "计算量",
+          value: "cal",
         },
-        {
-          label: "长整型",
-          value: "3"
-        },
-        {
-          label: "浮点数",
-          value: "4"
-        }
+        // {
+        //   label: "长整型",
+        //   value: "3",
+        // },
+        // {
+        //   label: "浮点数",
+        //   value: "4",
+        // },
       ],
       alarmOption: [],
       alarmLevelOption: [],
@@ -214,7 +213,7 @@ export default {
       //   sys:"",
       //   unit:"",
       // },
-      fetchAlarmTableDataQuery: {}
+      fetchAlarmTableDataQuery: {},
     };
   },
   components: {
@@ -223,12 +222,10 @@ export default {
     AutoScoll,
     Card,
     SelOrg,
-    BtnList
+    BtnList,
   },
   computed: {},
-  watch: {
-    
-  },
+  watch: {},
   methods: {
     ssbjCellStyle({ row, column, rowIndex, columnIndex }) {
       return ssbjCellStyle({ row, column, rowIndex, columnIndex });
@@ -245,19 +242,19 @@ export default {
     // 实时报警 list data数据接口
     fetchAlarmCount(params) {
       fetchAlarmCount(params)
-        .then(response => {
+        .then((response) => {
           let {
             data,
-            data: { code, data: res }
+            data: { code, data: res },
           } = response;
           return res;
         })
-        .then(res => {
+        .then((res) => {
           let [arr, i] = [[], 0];
           for (i; i < 2; i++) {
             let obj = {};
             _.forOwn(res, (value, key) => {
-              i == 0 ? (obj.alarmLelve = "紧急") : (obj.alarmLelve = "严重");
+              i == 0 ? (obj.alarmLelve = "紧急") : (obj.alarmLelve = "重要");
               obj[key] = value[i + 1];
             });
             arr.push(obj);
@@ -267,10 +264,10 @@ export default {
     },
     // 报警提示
     fetchalarmTipInfo() {
-      fetchalarmTipInfo().then(response => {
+      fetchalarmTipInfo().then((response) => {
         let {
           data,
-          data: { code, data: res }
+          data: { code, data: res },
         } = response;
         let { plantLvCnt, plantSys } = res;
         let arr = [];
@@ -279,12 +276,8 @@ export default {
           arr = [
             {
               name: "报警提示",
-              content: "当前没有报警提示信息"
-            },
-            {
-              name: "报警提示",
-              content: "当前没有报警提示信息"
-            }
+              content: "当前没有报警提示信息",
+            },  
           ];
         } else {
           _.forOwn(plantLvCnt, (item, key) => {
@@ -292,7 +285,7 @@ export default {
             obj.name = key;
             let content = "";
             _.forOwn(item, (value, idx) => {
-              content += idx == 1 ? "紧急：" : "严重：";
+              content += idx == 1 ? "紧急：" : "重要：";
               content += value + "个，";
             });
             obj.content = content.replace(/，$/gi, "");
@@ -300,26 +293,43 @@ export default {
           });
         }
         this.alarmTipInfo = arr;
+        _.forOwn(plantSys, (item, key) => { 
+          item.sys = this.switchData(item.sys);
+        }); 
         // 处理报警列表
         this.tableTipsData = plantSys.slice(0, 5);
       });
     },
+    switchData(data) {
+      let item = "";
+      switch (data) {
+        case "S":
+          item = "脱硫";
+          break;
+        case "N":
+          item = "脱硝";
+          break;
+        default:
+          item = "";
+      }
+      return item;
+    },
     // 获取传感器类型
     fetchAlarmLevle() {
-      fetchAlarmLevle().then(response => {
+      fetchAlarmLevle().then((response) => {
         let {
           data,
-          data: { code, data: res }
+          data: { code, data: res },
         } = response;
-        res = res.map(item => {
+        res = res.map((item) => {
           return {
             label: item.configName,
-            value: item.alarmLevel
+            value: item.alarmLevel,
           };
         });
         res.unshift({
           label: "全部",
-          value: "all"
+          value: "all",
         });
         this.alarmLevelOption = res;
       });
@@ -327,18 +337,20 @@ export default {
     // 查询实时报警table 数据
     fetchAlarmTableData(query) {
       this.tableLoading = true;
-      fetchAlarmTableData(query).then(response => {
+      fetchAlarmTableData(query).then((response) => {
         let {
           data,
-          data: { code, data: res }
+          data: { code, data: res },
         } = response;
-        this.listData = res;
+        this.listData = res; 
         this.tableLoading = false;
-      });
+      }).catch(err=>{
+        this.tableLoading = false;
+      })
     },
     // 重置
     setReset() {
-      this.$refs.myorg.reset1()
+      this.$refs.myorg.reset1();
       this.sensor = "";
       this.alarmLevel = "";
       this.fetchAlarmTableDataQuery = {};
@@ -393,7 +405,10 @@ export default {
       delete this.fetchAlarmTableDataQuery.sys;
       switch (data) {
         case "all":
-          this.fetchAlarmTableDataQuery = _.omit(this.fetchAlarmTableDataQuery, "dvc");
+          this.fetchAlarmTableDataQuery = _.omit(
+            this.fetchAlarmTableDataQuery,
+            "dvc"
+          );
           break;
         case "tlsys_code":
           this.fetchAlarmTableDataQuery.dvc = "S";
@@ -422,17 +437,6 @@ export default {
       if (value == "all") {
         this.fetchAlarmTableDataQuery = _.omit(
           this.fetchAlarmTableDataQuery,
-          "dtype"
-        );
-      } else {
-        this.fetchAlarmTableDataQuery.dtype = value;
-      }
-      clearInterval(this.timer);
-    },
-    changeSensor(value) {
-      if (value == "all") {
-        this.fetchAlarmTableDataQuery = _.omit(
-          this.fetchAlarmTableDataQuery,
           "lv"
         );
       } else {
@@ -440,11 +444,25 @@ export default {
       }
       clearInterval(this.timer);
     },
+    changeSensor(value) {
+      if (value == "all") {
+        this.fetchAlarmTableDataQuery = _.omit(
+          this.fetchAlarmTableDataQuery,
+          "dtype"
+        );
+      } else {
+        this.fetchAlarmTableDataQuery.dtype = value;
+      }
+      clearInterval(this.timer);
+    },
     // 刷新
-    refreshChange(){
+    refreshChange() {
       this.tableLoading = true;
-      this.fetchAlarmTableData({...this.fetchAlarmTableDataQuery,timestr:new Date()});
-    }
+      this.fetchAlarmTableData({
+        ...this.fetchAlarmTableDataQuery,
+        timestr: new Date(),
+      });
+    },
   },
   mounted() {
     this.fetchAlarmCount();
@@ -459,13 +477,13 @@ export default {
   destroyed() {
     clearInterval(this.timer);
     this.timer = null;
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .execution {
-    padding:0 10px;
+  padding: 0 10px;
 }
 .card {
   height: 244px;

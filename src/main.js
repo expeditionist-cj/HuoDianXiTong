@@ -1,5 +1,5 @@
 import 'babel-polyfill'
-// import '@babel/polyfill'
+// import 'lib-flexible/flexible.js';
 import 'classlist-polyfill'
 import Vue from 'vue'
 import axios from './router/axios'
@@ -17,16 +17,20 @@ import "@/components/index.js"; // 引入全局组件
 import './styles/common.scss';
 import "./styles/changeElementStyle.scss"
 import basicContainer from './components/basic-container/main'
+import ElTableFooter from 'el-table-footer'
+import "handsontable/dist/handsontable.full.css"
+
 // 插件 json 展示
 import vueJsonTreeView from 'vue-json-tree-view'
 
 import { validatenull } from '@/util/validate';
 
-// websocket
+// // websocket
 import VueNativeSock from 'vue-native-websocket';
 
 
 import Mycard from "@/components/mycard/mycard";
+import fullScreen from "@/components/fullScreen/index";
 import Foot from "@/components/footer/index";
 import SelOrg from "@/components/selectOrg/index";
 import BtnList from "@/components/checkAndResetBtn/index";
@@ -51,6 +55,12 @@ import MyIcon from "@/components/icon/index";
 import AssitantLayout from "@/components/assitantLayout/index"
 import Nodata from "@/components/nodata/index"
 import _ from "lodash";
+
+// import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import { Notification } from "element-ui";
+
+Vue.use(Notification);
 Vue.prototype.validatenull = validatenull
 Vue.prototype.filterForm = filterForm
 Vue.prototype.vaildData = vaildData
@@ -62,6 +72,8 @@ Vue.use(vueJsonTreeView)
 
 Vue.use(VueAxios, axios)
 
+Vue.use(ElTableFooter)
+
 // 注册全局容器
 Vue.component('basicContainer', basicContainer)
 Vue.component('v-chart', ECharts);
@@ -69,18 +81,20 @@ Vue.component('MyIcon', MyIcon);
 Vue.component('Card', basicContainer);
 Vue.component('Mycard', Mycard);
 Vue.component('Foot', Foot);
-
+Vue.component('fullScreen', fullScreen);
 Vue.component('SelOrg', SelOrg);
 Vue.component('BtnList', BtnList);
 Vue.component('AssitantLayout', AssitantLayout);
 Vue.component('Nodata', Nodata);
-// 注册socket
+// // 注册socket
+// Vue.use(VueNativeSock, scoketUrl, {
+//   reconnection: true,
+//   reconnectionAttempts: 5,
+//   reconnectionDelay: 3000,
+// })
 Vue.use(VueNativeSock, scoketUrl, {
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
+  connectManually: true,
 })
-
 // 加载相关url地址
 Object.keys(urls).forEach(key => {
   Vue.prototype[key] = urls[key]
@@ -98,6 +112,10 @@ iconfontVersion.forEach(ele => {
 })
 
 Vue.config.productionTip = false;
+
+
+
+
 
 
 new Vue({

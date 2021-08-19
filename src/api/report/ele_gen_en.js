@@ -7,3 +7,11 @@ export const get_device_power = (query) => {
         params: query
     })
 }
+// 调整
+export const updateAdjustData = (query) => {
+    return request({
+        url: '/datamonitor/device_power/updateAdjustData',
+        method: 'post',
+        data: query
+    })
+}

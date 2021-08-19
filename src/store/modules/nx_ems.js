@@ -2,7 +2,8 @@ const nx_ems = {
     state:{
         row:{},
         isSucess:false,
-        query:{}
+        query:{},
+        isNxSuccess:false
     },
     mutations:{
         SET_ROW(state,data){
@@ -10,6 +11,9 @@ const nx_ems = {
         },
         SET_ISSUCESS(state,data){
             state.isSucess = data
+        },
+        SET_ISNXSUCCESS(state,data){
+            state.isNxSuccess = data
         },
         SET_QUERY(state,data){
             state.query = data

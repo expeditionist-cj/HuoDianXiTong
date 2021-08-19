@@ -82,14 +82,16 @@ export const tableOption = {
       message: '请选择部门',
       trigger: 'change'
     }]
-  }, {
+  }, 
+  {
     label: '手机号',
     prop: 'phone',
     type: 'tel',
     value: '',
     span: 24,
     rules: [{validator: validateMobilePhone, trigger: 'blur'}]
-  }, {
+  }, 
+  {
     label: '角色',
     prop: 'role',
     formsolt: true,
